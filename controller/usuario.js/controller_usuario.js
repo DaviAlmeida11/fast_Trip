@@ -19,14 +19,15 @@ const listarUsuarios = async function () {
     try {
       //Chama a função do DAO para retornar a lista de diretores
       let result = await userDAO.getSelectAllUser()
-      console.log(result)
+      
+
   
       if (result) {
         if (result.length > 0) {
           MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
           MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-          MESSAGE.HEADER.response.total_actors = result.length
-          MESSAGE.HEADER.response.directors = result
+          MESSAGE.HEADER.response.total_user = result.length
+          MESSAGE.HEADER.response.user = result
   
           return MESSAGE.HEADER //200
         } else {

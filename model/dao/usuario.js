@@ -13,9 +13,12 @@ const prisma = new PrismaClient();
 
 const getSelectAllUser = async function() {
     try {
-        let sql = 'select * from tb_usuario order by id_usuario desc;'
+        let sql = 'select * from tb_usuario order by id_usuario desc'
+
 
         let result = await prisma.$queryRawUnsafe(sql)
+        console.log(result)
+       
 
         if(result){
             return result
@@ -23,6 +26,7 @@ const getSelectAllUser = async function() {
             return false
         }
     } catch (error) {
+        console.log(error)
         return false
     }
 }
