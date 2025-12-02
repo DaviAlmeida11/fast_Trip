@@ -23,19 +23,18 @@ app.use((request, response, next) => {
     next()
 })
 
-const controlerUsuario = require('./controller/usuario.js/controller_usuario')
-
-  // end poin para crud de filmes 
-  app.get('/v1/viagem/usuario', cors(), async function(request, response){
-    let usuario = await controlerUsuario.listarUsuarios()
-    
-    response.status(usuario.status_code)
-    response.json(usuario)
-    } )
+const usuarioRoutes = require('./routes/usuario')
 
 
-    app.listen(PORT, function(){
-        console.log('API está rodadndo')
-  
-    })
-  
+
+
+//Configuração das rotas
+app.use('/v1/travel/usuario', usuarioRoutes)
+
+app.use('/v1/travel/usuario/:id', usuarioRoutes)
+
+
+app.listen(PORT, function(){
+  console.log('API aguardando resposta ;)')
+})
+

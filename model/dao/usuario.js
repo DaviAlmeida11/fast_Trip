@@ -11,29 +11,52 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getSelectAllUser = async function() {
+const getSelectAllUser = async function () {
     try {
         let sql = 'select * from tb_usuario order by id_usuario desc'
 
 
         let result = await prisma.$queryRawUnsafe(sql)
-        console.log(result)
-       
 
-        if(result){
+
+
+        if (result) {
             return result
-        }else{
+        } else {
             return false
         }
     } catch (error) {
-        console.log(error)
+
         return false
     }
 }
 
 
-module.exports = {
 
-    getSelectAllUser
+const getSelectUserById = async function (id) {
+    try {
+        let sql = `select * from tb_usuario where id_usuario =${id}`
+
+        let result = await prisma.$queryRawUnsafe(sql)
+
+        if (result) {
+            return result
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        return false
+    }
+
+}
+
+
+
+
+module.exports = {
+    getSelectAllUser,
+    getSelectUserById
+
 }
 

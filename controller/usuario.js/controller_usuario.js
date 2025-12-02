@@ -13,22 +13,48 @@ const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
 
 const listarUsuarios = async function () {
-    //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
-    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
-  
-    try {
-      //Chama a função do DAO para retornar a lista de diretores
-      let result = await userDAO.getSelectAllUser()
-      
+  //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
-  
+  try {
+    //Chama a função do DAO para retornar a lista de diretores
+    let result = await userDAO.getSelectAllUser()
+
+
+
+    if (result) {
+      if (result.length > 0) {
+        MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
+        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
+        MESSAGE.HEADER.response.total_user = result.length
+        MESSAGE.HEADER.response.user = result
+
+        return MESSAGE.HEADER //200
+      } else {
+        return MESSAGE.ERROR_NOT_FOUND //404
+      }
+    } else {
+      return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+    }
+  } catch (error) {
+    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+  }
+}
+
+
+
+const listarUsuarioId = async function (id) {
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+  try {
+    if (id != '' && id != null && id != undefined && !isNaN(id) && id > 0) {
+      let result = await userDAO.getSelectUserById(id)
+
       if (result) {
         if (result.length > 0) {
           MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
           MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-          MESSAGE.HEADER.response.total_user = result.length
           MESSAGE.HEADER.response.user = result
-  
+
           return MESSAGE.HEADER //200
         } else {
           return MESSAGE.ERROR_NOT_FOUND //404
@@ -36,14 +62,17 @@ const listarUsuarios = async function () {
       } else {
         return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
       }
-    } catch (error) {
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    } else {
+      MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [ID] invalido`
+      return MESSAGE.ERROR_REQUIRED_FIELDS //400
     }
+  } catch (error) {
+    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
   }
+}
 
+module.exports = {
+  listarUsuarios,
+  listarUsuarioId
 
-  module.exports = {
-    listarUsuarios 
-  }
-  
-
+}
