@@ -37,4 +37,39 @@ router.get('/:id', cors(), async function (request, response){
 
 })
 
+router.post('/', cors(), bodyParserJson, async function (request, response) {
+
+
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type']
+
+    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType)
+
+    response.status(usuario.status_code)
+    response.json(usuario)
+})
+
+router.put('/:id', cors(), bodyParserJson, async function (request, response) {
+    let dadosBody = request.body
+
+    let idUsuario = request.params.id
+
+    let contentType = request.headers['content-type']
+    
+    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType)
+
+    response.status(usuario.status_code)
+    response.json(usuario)
+})
+
+router.delete('/:id', cors(), async function (request, response) {
+    let idUsuario = request.params.id
+
+    let usuario = await controllerUsuario.excluirUsuario(idUsuario)
+    response.status(usuario.status_code)
+    response.json(usuario)
+
+    
+})
 module.exports = router
+

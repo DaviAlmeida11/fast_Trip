@@ -20,6 +20,7 @@ app.use((request, response, next) => {
     response.header('Acess-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
 
     app.use(cors())
+    app.use(express.json())
     next()
 })
 
@@ -30,9 +31,6 @@ const usuarioRoutes = require('./routes/usuario')
 
 //Configuração das rotas
 app.use('/v1/travel/usuario', usuarioRoutes)
-
-app.use('/v1/travel/usuario/:id', usuarioRoutes)
-
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')
