@@ -101,8 +101,9 @@ const insertUsuario = async function (usuario) {
                     '${usuario.atualizado_em}'
                 )`
 
-        }
+        }console.log(sql)
         let result = await prisma.$executeRawUnsafe(sql)
+      
 
 
         if (result) {

@@ -25,12 +25,15 @@ app.use((request, response, next) => {
 })
 
 const usuarioRoutes = require('./routes/usuario')
+const viagemRoutes = require('./routes/viagem')
 
 
 
 
 //Configuração das rotas
 app.use('/v1/travel/usuario', usuarioRoutes)
+
+app.use('/v1/travel/viagem', viagemRoutes)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

@@ -36,7 +36,7 @@ const listarUsuarios = async function () {
     } else {
       return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
     }
-  } catch (error) {
+  } catch (error) { 
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
   }
 }
@@ -81,6 +81,7 @@ const inserirUsuario = async function (usuario, contentType) {
 
       if (!validarDados) {
         let result = await userDAO.insertUsuario(usuario)
+        console.log(result)
 
 
         if (result) {
