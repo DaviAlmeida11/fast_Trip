@@ -65,4 +65,15 @@ router.delete('/:id', cors(), async function(request, response) {
     response.json(viagem)
 })
 
+
+
+router.delete('/:id', cors(), async function (request, response) {
+    let idLocal = request.params.id
+
+    let local = await controllerViagem.excluirViagem(idLocal)
+    response.status(local.status_code)
+    response.json(local)
+
+    
+})
 module.exports = router

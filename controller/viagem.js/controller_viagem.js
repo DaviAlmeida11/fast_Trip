@@ -109,7 +109,7 @@ const inserirViagem = async function(viagem, contentType) {
             return MESSAGE.ERROR_CONTENT_TYPE //415
         }
         
-    } catch (error) {
+    } catch (error) {  
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
@@ -124,7 +124,7 @@ const atualizarViagem = async function(viagem, id, contentType) {
 
             if(validarId.status_code == 200){
 
-                let validarDados = validarDadosViagem(viagem)
+                let validarDados =  await validarDadosViagem(viagem)
 
                 if(!validarDados){
                     //Adicionando o ID no JSON com os dados do ator

@@ -1,7 +1,7 @@
 /*********************************************************************************************
  * Objetivo: Arquivo responsável pela realização do CRUD de ator no Banco de Dados MySQL
  * Data: 27/11/2025
- * Autor: DAvi de Almeida
+ * Autor: Davi de Almeida
  * Versão: 1.0
  **********************************************************************************************/
 
@@ -101,7 +101,7 @@ const insertUsuario = async function (usuario) {
                     '${usuario.atualizado_em}'
                 )`
 
-        }console.log(sql)
+        }
         let result = await prisma.$executeRawUnsafe(sql)
       
 
@@ -154,7 +154,7 @@ const setupdateUser = async function (usuario) {
                     criado_em = '${usuario.criado_em}',
                     atualizado_em = '${usuario.atualizado_em}'
                 WHERE id_usuario = ${usuario.id};
-            `;
+            `
         }
 
         
@@ -177,7 +177,7 @@ const setDeleteUser = async function (id) {
     try{
         let sql = `delete from tb_usuario where id_usuario = ${id}` 
         let result = await prisma.$executeRawUnsafe(sql)
-console.log(sql)
+
         if(result){
             return result
         }else{

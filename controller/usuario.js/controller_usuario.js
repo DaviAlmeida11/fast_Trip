@@ -81,7 +81,7 @@ const inserirUsuario = async function (usuario, contentType) {
 
       if (!validarDados) {
         let result = await userDAO.insertUsuario(usuario)
-        console.log(result)
+     
 
 
         if (result) {
