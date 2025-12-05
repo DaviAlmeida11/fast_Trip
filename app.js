@@ -37,6 +37,10 @@ const diarioRoutes = require('./routes/diario')
 
 const comentarioRoutes = require('./routes/comenatrio')
 
+const diarioNomeRoutes = require('./routes/diario_nome')
+
+const diarioPublicoRoutes = require('./routes/diarioPublico')
+
 
 
 
@@ -53,6 +57,12 @@ app.use('/v1/travel/seguidor', seguidorRoutes)
 app.use('/v1/travel/diario', diarioRoutes)
 
 app.use('/v1/travel/comentario', comentarioRoutes)
+
+app.use('/v1/travel/diarioNome', diarioNomeRoutes)
+
+app.use('/v1/travel/diarioPublico', diarioPublicoRoutes)
+
+
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

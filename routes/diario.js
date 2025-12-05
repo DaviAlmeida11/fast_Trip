@@ -21,6 +21,7 @@ router.use((request, response, next ) => {
 
 const controllerDiario = require('../controller/diario.js/controller_diario.')
 
+
 router.get('/', cors(), async function (request, response) {
     let diario = await controllerDiario.listarDiario()
     response.status(diario.status_code)
@@ -36,6 +37,17 @@ router.get('/:id', cors(), async function (request, response){
 
 
 })
+
+router.get('/:nome', cors(), async function (request, response){
+    let nomeDiario = request.params.nome
+
+    let diario = await controllerDiarioMessege.listarDiarioNome(nomeDiario)
+    response.status(diario.status_code)
+    response.json(diario)  
+
+
+})
+
 
 router.post('/', cors(), bodyParserJson, async function (request, response) {
 
