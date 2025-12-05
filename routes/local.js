@@ -22,7 +22,7 @@ router.use((request, response, next ) => {
 const controllerLocal = require('../controller/local/controller_local')
 
 router.get('/', cors(), async function (request, response) {
-    let local = await controllerLocal.listarUsuarios()
+    let local = await controllerLocal.listarLocal()
     response.status(local.status_code)
     response.json(local)    
 })
@@ -56,7 +56,6 @@ router.delete('/:id', cors(), async function (request, response) {
     response.status(local.status_code)
     response.json(local)
 
-    
 })
 
 

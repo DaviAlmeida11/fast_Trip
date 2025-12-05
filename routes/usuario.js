@@ -32,6 +32,7 @@ router.get('/:id', cors(), async function (request, response){
     let idUsuario = request.params.id
 
     let usuario = await controllerUsuario.listarUsuarioId(idUsuario)
+    response.status(usuario.status_code)
     response.json(usuario)
 
 

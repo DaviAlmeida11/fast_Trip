@@ -168,7 +168,6 @@ const setupdateUser = async function (usuario) {
         }
 
     } catch (error) {
-        console.log("Erro no update:", error);
         return false
     }
 }

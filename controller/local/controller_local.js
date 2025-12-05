@@ -12,7 +12,7 @@ const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
 
 
-const listarUsuarios = async function () {
+const listarLocal = async function () {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
@@ -76,11 +76,13 @@ const inserirLocal = async function (local, contentType) {
     if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
 
      
-      let validacao = await validarDados(local);
+      let validacao = await validarDadosLocal(local);
+        
 
       if (!validacao) {
 
         let result = await localDAO.setInsertLocal(local);
+   
 
         if (result) {
           let lastIdLocal = await localDAO.getSelectLastId();
@@ -108,7 +110,7 @@ const inserirLocal = async function (local, contentType) {
       return MESSAGE.ERROR_CONTENT_TYPE;
     }
 
-  } catch (error) { 
+  } catch (error) { console.log(error)
     
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
   }
@@ -214,7 +216,7 @@ const validarDadosLocal = async function (local) {
 
 
 module.exports = {
-  listarUsuarios,
+  listarLocal,
   listarLocalId,
   validarDadosLocal,
   inserirLocal,

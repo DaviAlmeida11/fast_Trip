@@ -26,8 +26,12 @@ app.use((request, response, next) => {
 
 // importação das rotas 
 const usuarioRoutes = require('./routes/usuario')
+
 const viagemRoutes = require('./routes/viagem')
+
 const localRoutes = require('./routes/local')
+
+const seguidorRoutes = require('./routes/seguidor')
 
 
 
@@ -39,6 +43,8 @@ app.use('/v1/travel/usuario', usuarioRoutes)
 app.use('/v1/travel/viagem', viagemRoutes)
 
 app.use('/v1/travel/local', localRoutes)
+
+app.use('/v1/travel/seguidor', seguidorRoutes)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

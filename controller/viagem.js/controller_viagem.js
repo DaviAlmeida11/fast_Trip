@@ -131,7 +131,7 @@ const atualizarViagem = async function(viagem, id, contentType) {
                     viagem.id = parseInt(id)
 
                     let result = await viagemDAO.setUpdateTravel(viagem)
-
+console.log(result)
                     if(result){
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
@@ -169,7 +169,7 @@ const excluirViagem = async function(id) {
 
             if(result){
                 MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETED_ITEM.status
-                MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETED_ITEM.status_code
+                MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETED_ITEM.status_code 
                 MESSAGE.HEADER.message = MESSAGE.SUCCESS_DELETED_ITEM.message
 
                 return MESSAGE.HEADER //200

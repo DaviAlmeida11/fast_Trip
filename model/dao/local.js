@@ -110,7 +110,7 @@ const updateLocal = async function (local) {
 const setDeleteLocal = async function (id) {
     try {
         let sql = `delete from tb_local where id_local = ${id}`
-        console.log(sql)
+      
         let result = await prisma.$executeRawUnsafe(sql)
 
         if (result) {
