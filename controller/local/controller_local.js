@@ -19,12 +19,12 @@ const listarLocal = async function () {
   try {
     //Chama a função do DAO para retornar a lista de diretores
     let result = await localDAO.getSelectAllLocal()
-
+console.log(result)
     if (result) {
       if (result.length > 0) {
         MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-        MESSAGE.HEADER.response.total_user = result.length
+        MESSAGE.HEADER.response.total_local = result.length
         MESSAGE.HEADER.response.local = result
 
         return MESSAGE.HEADER //200
@@ -52,6 +52,7 @@ const listarLocalId = async function (id) {
           MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
           MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
           MESSAGE.HEADER.response.local
+          MESSAGE.HEADER.response.local = result
           return MESSAGE.HEADER //200
         } else {
           return MESSAGE.ERROR_NOT_FOUND //404
@@ -110,7 +111,7 @@ const inserirLocal = async function (local, contentType) {
       return MESSAGE.ERROR_CONTENT_TYPE;
     }
 
-  } catch (error) { console.log(error)
+  } catch (error) { 
     
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
   }

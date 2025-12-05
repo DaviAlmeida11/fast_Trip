@@ -33,6 +33,10 @@ const localRoutes = require('./routes/local')
 
 const seguidorRoutes = require('./routes/seguidor')
 
+const diarioRoutes = require('./routes/diario')
+
+const comentarioRoutes = require('./routes/comenatrio')
+
 
 
 
@@ -45,6 +49,10 @@ app.use('/v1/travel/viagem', viagemRoutes)
 app.use('/v1/travel/local', localRoutes)
 
 app.use('/v1/travel/seguidor', seguidorRoutes)
+
+app.use('/v1/travel/diario', diarioRoutes)
+
+app.use('/v1/travel/comentario', comentarioRoutes)
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

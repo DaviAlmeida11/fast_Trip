@@ -1,6 +1,6 @@
 /*********************************************************************************************
  * Objetivo: Arquivo responsável pela realização do CRUD de ator no Banco de Dados MySQL
- * Data: 03/12/2025
+ * Data: 05/12/2025
  * Autor: Davi de Almeida
  * Versão: 1.0
  **********************************************************************************************/
@@ -8,12 +8,13 @@
 //Import da biblioteca do PrismaClient
 
 //Import da biblioteca do PrismaClient
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getSelectAllTravel = async function () {
+const getSelectAllComentario = async function () {
     try {
-        let sql = 'select * from tb_viagem order by id_viagem desc'
+        let sql = 'select * from tb_comentario order by id_comentario desc'
 
 
         let result = await prisma.$queryRawUnsafe(sql)
@@ -26,18 +27,18 @@ const getSelectAllTravel = async function () {
             return false
         }
     } catch (error) {
+        console.log(error)
 
         return false
     }
 }
 
-const getSelectTravelById = async function (id) {
-    try {
-        let sql = `select * from tb_viagem where id_viagem = ${id}`
 
+const getSelectComentarioById = async function (id) {
+    try {
+        let sql = 'select * from tb_comentario order by id_comentario desc'
 
         let result = await prisma.$queryRawUnsafe(sql)
-
         if (result) {
             return result
         } else {
@@ -49,13 +50,11 @@ const getSelectTravelById = async function (id) {
     }
 }
 
-const getSelectLastIdTravel = async function (id) {
+const getSelectLastId = async function () {
     try {
-        let sql = `select id_viagem from tb_viagem order by id_viagem desc limit 1`
-
+        let sql = 'select id_comentario from tb_comentario order by id_comentario desc limit 1 '
 
         let result = await prisma.$queryRawUnsafe(sql)
-
         if (result) {
             return result
         } else {
@@ -67,16 +66,57 @@ const getSelectLastIdTravel = async function (id) {
     }
 }
 
-const setInsertTravel = async function (viagem) {
+
+const setInsertComentario = async function (comentario) {
+
+
+
     try {
-        let sql = `
-    insert into tb_viagem (nome, data_ida, data_volta, tempo_viagem )
-    values ('${viagem.nome}', '${viagem.data_ida}', '${viagem.data_volta}', '${viagem.tempo_viagem}')`
-       console.log(sql)
+        let sql = `insert into tb_comentario(nome, id_diario, id_usuario
+          )values('${comentario.nome}', '${comentario.id_diario}', '${comentario.id_usuario}')`
+
+        let result = await prisma.$executeRawUnsafe(sql)
+        if (result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) {
+
+        return false
+    }
+}
+
+const setUpdateComentario = async function (comentario) {
+
+
+
+    try {
+        let sql = `update tb_comentario
+         set 
+         nome ='${comentario.nome}',
+         id_diario = '${comentario.id_diario}',
+         id_usuario = '${comentario.id_usuario}'
+         where id_comentario = '${comentario.id}'`
+console.log(sql)
+        let result = await prisma.$executeRawUnsafe(sql)
+        if (result) {
+            return result
+        } else {
+            return false
+        }
+    } catch (error) { console.log(error)
+
+        return false
+    }
+}
+
+const setDeleteComentario = async function (id) {
+    try {
+        let sql = `delete from tb_comentario where id_comentario = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
-
         if (result) {
             return result
         } else {
@@ -87,52 +127,16 @@ const setInsertTravel = async function (viagem) {
     }
 }
 
-const setUpdateTravel = async function (viagem) {
-    try {
-        let sql = `update tb_viagem 
-                    set nome = '${viagem.nome}', 
-                    data_ida = '${viagem.data_ida}', 
-                    data_volta = '${viagem.data_volta}', 
-                    tempo_viagem = '${viagem.tempo_viagem}'
-                    where id_viagem = ${viagem.id}`
 
-
-        let result = await prisma.$executeRawUnsafe(sql)
-
-        if (result) {
-            return result
-        } else {
-            return false
-        }
-    } catch (error) {
-
-        return false
-    }
-}
-
-const setDeleteTravel = async function (id) {
-    try {
-        let sql = `delete from tb_viagem where id_viagem = ${id}`
-
-
-        let result = await prisma.$queryRawUnsafe(sql)
-
-        if (result) {
-            return result
-        } else {
-            return false
-        }
-    } catch (error) {
-
-        return false
-    }
-}
 
 module.exports = {
-    getSelectAllTravel,
-    getSelectTravelById,
-    getSelectLastIdTravel,
-    setInsertTravel,
-    setUpdateTravel,
-    setDeleteTravel
+    getSelectAllComentario,
+    getSelectComentarioById,
+    getSelectLastId,
+    setInsertComentario,
+    setUpdateComentario,
+    setDeleteComentario
+
+
+
 }

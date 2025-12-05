@@ -53,7 +53,7 @@ const buscarViagemPorId = async function(id) {
                 if(result.length > 0){
                     MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
                     MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-                    MESSAGE.HEADER.response.actor = result
+                    MESSAGE.HEADER.response.travels = result
 
                     return MESSAGE.HEADER //200
                 }else{
@@ -131,7 +131,7 @@ const atualizarViagem = async function(viagem, id, contentType) {
                     viagem.id = parseInt(id)
 
                     let result = await viagemDAO.setUpdateTravel(viagem)
-console.log(result)
+
                     if(result){
                         MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
                         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code

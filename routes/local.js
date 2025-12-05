@@ -32,6 +32,7 @@ router.get('/:id', cors(), async function (request, response){
     let idLocal = request.params.id
 
     let local = await controllerLocal.listarLocalId(idLocal)
+    response.status(local.status_code)
     response.json(local)
 
 
@@ -44,6 +45,19 @@ router.post('/', cors(), bodyParserJson, async function (request, response) {
     let contentType = request.headers['content-type']
 
     let local = await controllerLocal.inserirLocal(dadosBody, contentType)
+
+    response.status(local.status_code)
+    response.json(local)
+})
+
+router.put('/:id', cors(), bodyParserJson, async function (request, response) {
+    let dadosBody = request.body
+
+    let idLocal = request.params.id
+
+    let contentType = request.headers['content-type']
+    
+    let local = await controllerLocal.atualizarLocal(dadosBody, idLocal, contentType)
 
     response.status(local.status_code)
     response.json(local)

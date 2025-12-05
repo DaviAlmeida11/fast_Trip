@@ -19,21 +19,20 @@ router.use((request, response, next ) => {
 
 // ENDPOINTS DA TABELA Usuario
 
-const controllerUsuario = require('../controller/usuario.js/controller_usuario')
+const controllerDiario = require('../controller/diario.js/controller_diario.')
 
 router.get('/', cors(), async function (request, response) {
-    let usuario = await controllerUsuario.listarUsuarios()
-    response.status(usuario.status_code)
-    response.json(usuario.status)    
+    let diario = await controllerDiario.listarDiario()
+    response.status(diario.status_code)
+    response.json(diario)    
 })
 
-
 router.get('/:id', cors(), async function (request, response){
-    let idUsuario = request.params.id
+    let idDiario = request.params.id
 
-    let usuario = await controllerUsuario.listarUsuarioId(idUsuario)
-    response.status(usuario.status_code)
-    response.json(usuario.status)
+    let diario = await controllerDiario.listarDiarioId(idDiario)
+    response.status(diario.status_code)
+    response.json(diario)  
 
 
 })
@@ -41,36 +40,37 @@ router.get('/:id', cors(), async function (request, response){
 router.post('/', cors(), bodyParserJson, async function (request, response) {
 
 
-    let dadosBody = request.body;
+    let dadosBody = request.body
     let contentType = request.headers['content-type']
 
-    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType)
+    let diario = await controllerDiario.inserirDiario(dadosBody, contentType)
 
-    response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.status(diario.status_code)
+    response.json(diario)
 })
+
 
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
 
-    let idUsuario = request.params.id
+    let idDiario = request.params.id
 
     let contentType = request.headers['content-type']
     
-    let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType)
+    let diario = await controllerDiario.atualizarDiario(dadosBody, idDiario, contentType)
 
-    response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.status(diario.status_code)
+    response.json(diario)
 })
 
 router.delete('/:id', cors(), async function (request, response) {
-    let idUsuario = request.params.id
+    let idDiario = request.params.id
 
-    let usuario = await controllerUsuario.excluirUsuario(idUsuario)
-    response.status(usuario.status_code)
-    response.json(usuario.status)
+    let diario = await controllerDiario.excluirDiairo(idDiario)
+    response.status(diario.status_code)
+    response.json(diario)
 
-    
 })
-module.exports = router
 
+
+module.exports = router

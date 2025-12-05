@@ -24,7 +24,7 @@ const controllerViagem = require('../controller/viagem.js/controller_viagem')
 router.get('/', cors(), async function(request, response) {
     let viagem = await controllerViagem.listarViagens()
     response.status(viagem.status_code)
-    response.json(viagem)
+    response.json(viagem.status)
 })
 
 router.get('/:id', cors(), async function(request, response) {
@@ -32,7 +32,7 @@ router.get('/:id', cors(), async function(request, response) {
     
     let viagem = await controllerViagem.buscarViagemPorId(idViagem)
     response.status(viagem.status_code)
-    response.json(viagem)
+    response.json(viagem.status)
 })
 
 router.post('/', cors(), bodyParserJSON, async function(request, response) {
@@ -42,7 +42,7 @@ router.post('/', cors(), bodyParserJSON, async function(request, response) {
 
     let viagem = await controllerViagem.inserirViagem(dadosBody, contentType)
     response.status(viagem.status_code)
-    response.json(viagem)
+    response.json(viagem.status)
 })
 
 router.put('/:id', cors(), bodyParserJSON, async function(request, response) {

@@ -169,6 +169,7 @@ module.exports = {
     getSelectSeguidorById,
     getSelectLastId,
     setInsertSeguidor,
+    setupdateFolower,
     setDeleteSeguidor
     
 }
