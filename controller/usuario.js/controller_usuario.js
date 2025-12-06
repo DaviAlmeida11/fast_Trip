@@ -6,10 +6,11 @@
  **********************************************************************************************/
 
 //Import do arquivo DAO para manipular o CRUD no BD
-const userDAO = require('../../model/dao/usuario.js')
+const cripitografia = require('../../cripitografia/cripitografia.js');
 
-const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
+const userDAO = require('../../model/dao/usuario')
 
+const MESSAGE_DEFAULT = require('../modulo/message_conf')
 
 
 const listarUsuarios = async function () {
@@ -71,44 +72,37 @@ const listarUsuarioId = async function (id) {
   }
 }
 
-const inserirUsuario = async function (usuario, contentType) {
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
-  try {
-    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
-      let validarDados = validarDadosUsuario(usuario)
-      
-      if (!validarDados) {
-        let result = await userDAO.insertUsuario(usuario)
-     
-        if (result) {
+const inserirUsuario = async function (dados) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-          let lastIdUsuario = await userDAO.getSelectLastId()
+    try {
+        // VALIDA CAMPOS OBRIGATÓRIOS
+        if (!dados.email || !dados.senha) {
+            MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
+            return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
+        }
 
-          if (lastIdUsuario) {
-            usuario.id = lastIdUsuario
-            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
+        dados.senha = await cripitografia.criptografarSenha(dados.senha);
+
+        // INSERIR NO BANCO
+        let resultado = await userDAO.insertUsuario(dados);
+
+        if (resultado) {
+             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
             MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
-            MESSAGE.HEADER.response = usuario
+            MESSAGE.HEADER.response = dados
 
             return MESSAGE.HEADER
-          } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL // 500
-          }
         } else {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
-      } else {
-        return validarDados
-      }
-    } else {
-      return MESSAGE.ERROR_CONTENT_TYPE //415
-    }
 
-  } catch (error) {
-    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
-  }
-}
+    } catch (error) { console.log(error)
+
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+    }
+};
 
 const atualizarUsuario = async function(usuario, id, contentType) {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções

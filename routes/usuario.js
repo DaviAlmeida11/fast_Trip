@@ -24,7 +24,7 @@ const controllerUsuario = require('../controller/usuario.js/controller_usuario')
 router.get('/', cors(), async function (request, response) {
     let usuario = await controllerUsuario.listarUsuarios()
     response.status(usuario.status_code)
-    response.json(usuario.status)    
+    response.json(usuario)    
 })
 
 
@@ -33,7 +33,7 @@ router.get('/:id', cors(), async function (request, response){
 
     let usuario = await controllerUsuario.listarUsuarioId(idUsuario)
     response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.json(usuario)
 
 
 })
@@ -47,7 +47,7 @@ router.post('/', cors(), bodyParserJson, async function (request, response) {
     let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType)
 
     response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.json(usuario)
 })
 
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
@@ -60,7 +60,7 @@ router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let usuario = await controllerUsuario.atualizarUsuario(dadosBody, idUsuario, contentType)
 
     response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.json(usuario)
 })
 
 router.delete('/:id', cors(), async function (request, response) {
@@ -68,7 +68,7 @@ router.delete('/:id', cors(), async function (request, response) {
 
     let usuario = await controllerUsuario.excluirUsuario(idUsuario)
     response.status(usuario.status_code)
-    response.json(usuario.status)
+    response.json(usuario)
 
     
 })
