@@ -5,17 +5,10 @@ const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
 
 
-const listarDiarioNome = async function (id, nome) {
+const listarDiarioNome = async function ( nome) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
   try {
-
-
-    if (id == '' || id == null || id == undefined || !Number(id) || id <= 0) {
-      MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [ID] inválido`
-      return MESSAGE.ERROR_REQUIRED_FIELDS //400
-    }
-
 
     if (nome == '' || nome == null || nome == undefined || nome.length > 100) {
       MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [NOME] inválido`
@@ -23,7 +16,7 @@ const listarDiarioNome = async function (id, nome) {
     }
 
  
-    let result = await diarioNomeDAO.listarDiarioNome(id, nome)
+    let result = await diarioNomeDAO.listarDiarioNome(nome)
 
     if (result) {
       if (result.length > 0) {
@@ -39,7 +32,7 @@ const listarDiarioNome = async function (id, nome) {
     }
 
   } catch (error) {
-    console.log(error)
+
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
   }
 }

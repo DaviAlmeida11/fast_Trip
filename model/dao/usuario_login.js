@@ -18,21 +18,33 @@ const prisma = new PrismaClient();
 
 const buscarUsuarioPorEmail = async function (email) {
     try {
-        let sql = `SELECT email, senha FROM tb_usuario WHERE email = '${email}'`;
+        let sql = `
+            SELECT 
+                id_usuario,
+                nome, 
+                email, 
+                senha,  <!-- NÃO ESQUEÇA DISSO!
+                nickname
+            FROM tb_usuario 
+            WHERE email = ${email}
+            LIMIT 1 `
+            
+         let result = await prisma.$executeRawUnsafe(sql);
 
-        let result = await prisma.$queryRawUnsafe(sql);
-
-        if (result.length > 0) {
-            return result[0];  // retorna um único usuário
+        if (result) {
+            return result // UPDATE OK
         } else {
-            return false;
+            return false; // UPDATE não afetou linhas
         }
 
     } catch (error) {
-
-        return false;
+        return false
     }
 }
+        
+    
+        
+
 
 module.exports = {
     buscarUsuarioPorEmail

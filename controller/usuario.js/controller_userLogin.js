@@ -29,11 +29,8 @@ const validarLoginUsuario = async function (email, senhaDigitada) {
         }
 
         let user = await userLoginDAO.buscarUsuarioPorEmail(email)
-
-        if (!user) {
-            return MESSAGE.ERROR_NOT_FOUND
-        }
-
+console.log(user)
+       
         const senhaCorreta = await cripto.compararSenha(senhaDigitada, user.senha)
 
         if (!senhaCorreta) {

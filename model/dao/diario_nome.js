@@ -12,19 +12,18 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const listarDiarioNome = async function (id, nome) {
+const listarDiarioNome = async function  (nome_diario) {
   try {
     sql = `
       SELECT * FROM tb_diario
-      WHERE id_diario = ${id}
-      AND nome = '${nome}'
-    `
+      WHERE nome = '${nome_diario}' `
 
+      console.log(sql)
     let result = await prisma.$queryRawUnsafe(sql)
     return result || false
 
   } catch (error) {
-    console.log(error)
+   
     return false
   }
 }

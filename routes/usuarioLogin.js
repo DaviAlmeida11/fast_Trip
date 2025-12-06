@@ -22,18 +22,24 @@ router.use((request, response, next) => {
 
 const controllerUsuarioLogin = require('../controller/usuario.js/controller_userLogin')
 
-
-
 router.post('/', cors(), bodyParserJson, async function (request, response) {
-
     let dadosBody = request.body
-    
     let contentType = request.headers['content-type']
-console.log(contentType)
-    let usuario = await controllerUsuarioLogin.validarLoginUsuario(dadosBody, contentType)
+
+    // DEBUG: Veja o que está chegando
+    console.log('=== DEBUG ROTA ===');
+    console.log('dadosBody:', dadosBody);
+    console.log('dadosBody.email:', dadosBody.email);
+    console.log('dadosBody.senha:', dadosBody.senha);
+    console.log('contentType:', contentType);
+    
+    // CHAMADA CORRETA - passe os valores SEPARADOS
+    let usuario = await controllerUsuarioLogin.validarLoginUsuario(
+        dadosBody.email,    // string
+        dadosBody.senha     // string
+    )
 
     response.status(usuario.status_code)
     response.json(usuario)
-
 })
 module.exports = router

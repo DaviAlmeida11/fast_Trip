@@ -21,11 +21,11 @@ router.use((request, response, next ) => {
 
 
 
-router.get('/:id/:nome', cors(), async function (request, response){
-    let idDiario = request.params.id      // PEGAR O ID
+router.get('/:nome', cors(), async function (request, response){
+
     let nomeDiario = request.params.nome  // PEGAR O NOME
 
-    let diario = await controllerDiarioMessege.listarDiarioNome(idDiario, nomeDiario)
+    let diario = await controllerDiarioMessege.listarDiarioNome(nomeDiario)
     
     response.status(diario.status_code)
     response.json(diario)
