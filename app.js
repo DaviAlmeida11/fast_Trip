@@ -43,7 +43,9 @@ const diarioPublicoRoutes = require('./routes/diarioPublico')
 
 const usuarioLoginRoute = require('./routes/usuarioLogin')
 
-const UsuarioViagemDIario = require('./routes/UsuarioViagemDiario')
+const UsuarioViagemDIarioRoutes = require('./routes/UsuarioViagemDiario')
+
+const tipoViagemRoutes = require('./routes/tipo_viagem')
 
 
 
@@ -53,6 +55,8 @@ const UsuarioViagemDIario = require('./routes/UsuarioViagemDiario')
 app.use('/v1/travel/usuario', usuarioRoutes)
 
 app.use('/v1/travel/viagem', viagemRoutes)
+
+app.use('/v1/tarvel/tipoViagem', tipoViagemRoutes )
 
 app.use('/v1/travel/local', localRoutes)
 
@@ -68,7 +72,7 @@ app.use('/v1/travel/diarioPublico', diarioPublicoRoutes)
 
 app.use('/v1/travel/usuarioLogin', usuarioLoginRoute)
 
-app.use('/v1/travel/usuarioViagemDiario/', UsuarioViagemDIario )
+app.use('/v1/travel/usuarioViagemDiario/', UsuarioViagemDIarioRoutes)
 
 
 

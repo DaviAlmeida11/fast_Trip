@@ -19,18 +19,18 @@ router.use((request, response, next ) => {
 
 //ENDPOINTS DA TABELA VIAGEM
 
-const controllerViagem = require('../controller/viagem.js/controller_viagem')
+const controllerTipoViagem = require('../controller/tipo_viagem/controller_tipoViagem')
 
 router.get('/', cors(), async function(request, response) {
-    let viagem = await controllerViagem.listarViagens()
+    let viagem = await controllerTipoViagem.listarTipoViagens()
     response.status(viagem.status_code)
-    response.json(viagem.status)
+    response.json(viagem)
 })
 
 router.get('/:id', cors(), async function(request, response) {
     let idViagem = request.params.id
     
-    let viagem = await controllerViagem.buscarViagemPorId(idViagem)
+    let viagem = await controllerTipoViagem.buscarTipoViagensPorId(idViagem)
     response.status(viagem.status_code)
     response.json(viagem)
 })
@@ -40,7 +40,7 @@ router.post('/', cors(), bodyParserJSON, async function(request, response) {
 
     let contentType = request.headers['content-type']
 
-    let viagem = await controllerViagem.inserirViagem(dadosBody, contentType)
+    let viagem = await controllerTipoViagem.inserirTipoViagens(dadosBody, contentType)
     response.status(viagem.status_code)
     response.json(viagem)
 })
@@ -52,7 +52,7 @@ router.put('/:id', cors(), bodyParserJSON, async function(request, response) {
 
     let contentType = request.headers['content-type']
 
-    let viagem = await controllerViagem.atualizarViagem(dadosBody, idViagem, contentType)
+    let viagem = await controllerTipoViagem.atualizarTipoViagens(dadosBody, idViagem, contentType)
     response.status(viagem.status_code)
     response.json(viagem)
 })
@@ -60,7 +60,7 @@ router.put('/:id', cors(), bodyParserJSON, async function(request, response) {
 router.delete('/:id', cors(), async function(request, response) {
     let idViagem = request.params.id
 
-    let viagem = await controllerViagem.excluirViagem(idViagem)
+    let viagem = await controllerTipoViagem.excluirTipoViagens(idViagem)
     response.status(viagem.status_code)
     response.json(viagem)
 })
