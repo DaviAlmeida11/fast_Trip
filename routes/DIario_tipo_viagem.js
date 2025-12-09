@@ -28,7 +28,7 @@ router.get('/', cors(), async function (request, response) {
     response.json(diario)    
 })
 
-router.get('/diario/:id', cors(), async function (request, response){
+router.get('/:id', cors(), async function (request, response){
     let idDiarioTipoViagem = request.params.id
 
     let diario = await controllerDiarioTipoViagem.listarTiposViagemPorDiarioId(idDiarioTipoViagem)

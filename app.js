@@ -49,8 +49,9 @@ const tipoViagemRoutes = require('./routes/tipo_viagem')
 
 const usuarioSeguidorRoutes = require('./routes/usurio_seguidor')
 
-const diarioTipoViagemRoutes= require('./routes/DIario_tipo_viagem')
+const diarioTipoViagemRoutes = require('./routes/DIario_tipo_viagem')
 
+const diarioCurtidaRoutes = require('./routes/usuarioViagem')
 
 
 //Configuração das rotas
@@ -80,7 +81,7 @@ app.use('/v1/traevl/usuarioSeguidor', usuarioSeguidorRoutes)
 
 app.use('/v1/travel/diarioTipoViagem' , diarioTipoViagemRoutes)
 
-
+app.use('/v1/travel/diarioCuurtida', diarioCurtidaRoutes )
 
 app.listen(PORT, function(){
   console.log('API aguardando resposta ;)')

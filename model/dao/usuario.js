@@ -81,7 +81,7 @@ const insertUsuario = async function (usuario) {
                     '${usuario.email}',
                     '${usuario.senha}',
                     '${usuario.genero}',
-                    '${usuario.img}',
+                     ${usuario.img},
                     '${usuario.criado_em}',
                     '${usuario.atualizado_em}'
                 )`
@@ -103,7 +103,6 @@ const insertUsuario = async function (usuario) {
 
         }
         let result = await prisma.$executeRawUnsafe(sql)
-      
 
 
         if (result) {
@@ -154,10 +153,10 @@ const setupdateUser = async function (usuario) {
                     criado_em = '${usuario.criado_em}',
                     atualizado_em = '${usuario.atualizado_em}'
                 WHERE id_usuario = ${usuario.id};
-            `
+            `;
         }
 
-        
+
 
         let result = await prisma.$executeRawUnsafe(sql);
 
@@ -168,25 +167,26 @@ const setupdateUser = async function (usuario) {
         }
 
     } catch (error) {
+        console.log("Erro no update:", error);
         return false
     }
 }
 
 const setDeleteUser = async function (id) {
-    try{
-        let sql = `delete from tb_usuario where id_usuario = ${id}` 
+    try {
+        let sql = `delete from tb_usuario where id_usuario = ${id}`
         let result = await prisma.$executeRawUnsafe(sql)
 
-        if(result){
+        if (result) {
             return result
-        }else{
+        } else {
             return false
         }
     } catch (error) {
         return false
     }
 }
-    
+
 
 
 

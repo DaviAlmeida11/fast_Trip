@@ -20,8 +20,12 @@ const buscarUsuarioPorEmail = async function (email) {
     try {
         let sql = `
             SELECT 
+                nome,
+                nickname,
                 email, 
-                senha
+                senha,
+                genero,
+                img
             FROM tb_usuario 
             WHERE email = '${email}'
              order by id_usuario desc LIMIT 1;`
