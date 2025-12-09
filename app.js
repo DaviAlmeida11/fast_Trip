@@ -47,7 +47,7 @@ const UsuarioViagemDIarioRoutes = require('./routes/UsuarioViagemDiario')
 
 const tipoViagemRoutes = require('./routes/tipo_viagem')
 
-
+const usuarioSeguidorRoutes = require('./routes/usurio_seguidor')
 
 
 
@@ -73,6 +73,8 @@ app.use('/v1/travel/diarioPublico', diarioPublicoRoutes)
 app.use('/v1/travel/usuarioLogin', usuarioLoginRoute)
 
 app.use('/v1/travel/usuarioViagemDiario/', UsuarioViagemDIarioRoutes)
+
+app.use('/v1/traevl/usuarioSeguidor/', usuarioSeguidorRoutes)
 
 
 

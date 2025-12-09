@@ -98,7 +98,7 @@ const inserirUsuario = async function (dados) {
             return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
 
-    } catch (error) { console.log(error)
+    } catch (error) { 
 
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }

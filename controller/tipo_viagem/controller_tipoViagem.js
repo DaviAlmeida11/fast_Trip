@@ -81,7 +81,7 @@ const inserirTipoViagens = async function(viagem, contentType) {
 
             if(!validarDados){
                 let result = await tipoViagemDAO.setInsertTypeTravel(viagem)
-
+console.log(result)
                 if(result){
 
                     let lastIdViagem = await tipoViagemDAO.getSelectLastIdTypeTravel()

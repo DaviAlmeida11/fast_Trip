@@ -24,7 +24,7 @@ const controllerViagem = require('../controller/viagem.js/controller_viagem')
 router.get('/', cors(), async function(request, response) {
     let viagem = await controllerViagem.listarViagens()
     response.status(viagem.status_code)
-    response.json(viagem.status)
+    response.json(viagem)
 })
 
 router.get('/:id', cors(), async function(request, response) {
