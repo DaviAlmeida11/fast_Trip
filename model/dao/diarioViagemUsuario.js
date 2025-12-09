@@ -36,7 +36,7 @@ const getSelectAllUsuarioViagemDiario = async function () {
 
 const getSelectUserTripDyariId = async function (nome) {
     try {
-        let sql = `SELECT * FROM vw_usuario_diarios_viagens_com_Id WHERE usuario_nome = '${nome}';`
+        let sql = `SELECT * FROM vw_usuario_diarios_viagens_com_Id WHERE usuario_nome like '%${nome}%';`
 console.log(sql)
         let result = await prisma.$queryRawUnsafe(sql)
 

@@ -16,7 +16,7 @@ const listarDiarioNome = async function  (nome_diario) {
   try {
     sql = `
       SELECT * FROM tb_diario
-      WHERE nome = '${nome_diario}' `
+      WHERE nome like '%${nome_diario}%' `
 
       console.log(sql)
     let result = await prisma.$queryRawUnsafe(sql)
