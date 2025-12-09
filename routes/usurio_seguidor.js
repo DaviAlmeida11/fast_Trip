@@ -78,7 +78,7 @@ router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     response.json(usuarioSeguidor )
 })
 
-router.delete('/usuario/:id', cors(), async function (request, response) {
+router.delete('/:id', cors(), async function (request, response) {
     let idUsuarioSeguidor = request.params.id
 
     let usuarioSeguidor = await controllerUsuarioSeguidor.excluirUsuarioSeguidor(idUsuarioSeguidor)

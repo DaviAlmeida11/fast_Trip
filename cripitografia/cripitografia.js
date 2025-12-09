@@ -5,8 +5,10 @@ const criptografarSenha = (senha) => {
         .then(salt => bcrypt.hash(senha, salt))
 }
 
-const compararSenha = (senhaDigitada, senhaHash) => {
-    return bcrypt.compare(senhaDigitada, senhaHash)
+const compararSenha = async (senhaDigitada, senhaHash) => {
+ const Coisas =  await bcrypt.compare(senhaDigitada, senhaHash) 
+ console.log(Coisas)
+ return Coisas
 }
 
 module.exports = {

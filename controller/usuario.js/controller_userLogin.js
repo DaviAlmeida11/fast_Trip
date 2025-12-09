@@ -29,9 +29,11 @@ const validarLoginUsuario = async function (email, senhaDigitada) {
         }
 
         let user = await userLoginDAO.buscarUsuarioPorEmail(email)
-console.log(user)
-       
-        const senhaCorreta = await cripto.compararSenha(senhaDigitada, user.senha)
+        console.log(user)
+
+        const senhaCorreta = await cripto.compararSenha(senhaDigitada, user[0].senha)
+
+
 
         if (!senhaCorreta) {
             MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Senha incorreta"
