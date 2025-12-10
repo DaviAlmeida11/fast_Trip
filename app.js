@@ -8,6 +8,17 @@
 //Import das bibliotecas para criar a API
 const express = require('express')
 const cors = require('cors')
+const multer = require('multer')
+
+
+//Configuração para o multer enviar o arquivo de imagem 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+      cb(null, 'uploads/')
+    }
+})
+//instancia para criar um objteto com as caracteristicas do multer
+const upload = multer()
 
 const PORT = process.PORT || 8080
 

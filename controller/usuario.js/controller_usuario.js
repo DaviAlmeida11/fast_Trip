@@ -8,9 +8,14 @@
 //Import do arquivo DAO para manipular o CRUD no BD
 const cripitografia = require('../../cripitografia/cripitografia.js');
 
+const UPLOAD = require('../upload/controller_upload_azure.js')
+
 const userDAO = require('../../model/dao/usuario')
 
 const MESSAGE_DEFAULT = require('../modulo/message_conf')
+
+const fetch = (...args) => import('node-fetch').then(({default : fetch}) => fetch(...args))
+  
 
 
 const listarUsuarios = async function () {
@@ -72,38 +77,46 @@ const listarUsuarioId = async function (id) {
   }
 }
 
-const inserirUsuario = async function (dados) {
-    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
+const inserirUsuario = async function (dados, foto) {
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-    try {
-        // VALIDA CAMPOS OBRIGATÓRIOS
-        if (!dados.email || !dados.senha) {
-            MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
-            return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
-        }
+  try {
 
-        dados.senha = await cripitografia.criptografarSenha(dados.senha);
 
-        // INSERIR NO BANCO
-        let resultado = await userDAO.insertUsuario(dados);
+      if (!dados.email || !dados.senha) {
+          MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
+          return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
+      }
 
-        if (resultado) {
-             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
-            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
-            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
-            MESSAGE.HEADER.response = dados
+     
+      dados.senha = await cripitografia.criptografarSenha(dados.senha);
 
-            return MESSAGE.HEADER
-        } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-        }
+     
+      let urlFoto = await UPLOAD.upliadFiles(foto);
 
-    } catch (error) { 
+      if (!urlFoto) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
 
-        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
-    }
-};
+      dados.capa = urlFoto;
 
+      let resultado = await userDAO.insertUsuario(dados);
+
+      if (resultado) {
+          MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
+          MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
+          MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
+          MESSAGE.HEADER.response = dados;
+
+          return MESSAGE.HEADER;
+      } else {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+  } catch (error) { 
+      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+  }
+}
 const atualizarUsuario = async function(usuario, id, contentType) {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))

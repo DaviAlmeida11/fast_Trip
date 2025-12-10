@@ -109,44 +109,64 @@ const listarSeguidoresUsuarioId = async function (usuarioId) {
 };
 
 //INSERIR VÍNCULO
-
-const inserirUsuarioSeguidor = async function (data, contentType) {
+const inserirUsuario = async function (dados, foto, contentType) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
-      let validar = await validarDadosUsuarioSeguidor(data);
+      // Verifica Content-Type
+      if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
 
-      if (!validar) {
-        let result = await usuarioSeguidorDAO.setInsertUserFollower(data);
-
-        if (result) {
-          let lastId = await usuarioSeguidorDAO.getSelectLastIdUserFollower();
-
-          if (lastId) {
-            data.id_usuario_seguidor = lastId[0].id_usuario_seguidor;
-
-            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
-            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
-            MESSAGE.SUCCESS_CREATED_ITEM.status_code;
-            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
-            MESSAGE.HEADER.response = data;
-
-            return MESSAGE.HEADER;
-          } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
+          // 1. Validar campos obrigatórios
+          if (!dados.email || !dados.senha) {
+              MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
+              return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
           }
-        } else {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
-        }
+
+          // 2. Criptografar senha
+          dados.senha = await cripitografia.criptografarSenha(dados.senha);
+
+          // 3. Fazer upload da foto
+          let urlFoto = await UPLOAD.upliadFiles(foto);
+
+          if (!urlFoto) {
+              return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+          }
+
+          dados.capa = urlFoto;
+
+          // 4. Inserir usuário no banco
+          let result = await userDAO.insertUsuario(dados);
+
+          if (result) {
+
+              // 5. Buscar último ID inserido
+              let lastId = await userDAO.selectLastIdUsuario();
+
+              if (lastId && lastId[0] && lastId[0].id_usuario) {
+                  dados.id_usuario = lastId[0].id_usuario;
+
+                  // 6. Retornar resposta no padrão MESSAGE
+                  MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
+                  MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
+                  MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
+                  MESSAGE.HEADER.response = dados;
+
+                  return MESSAGE.HEADER;
+
+              } else {
+                  return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+              }
+
+          } else {
+              return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+          }
+
       } else {
-        return validar;
+          return MESSAGE.ERROR_CONTENT_TYPE; // 415
       }
-    } else {
-      return MESSAGE.ERROR_CONTENT_TYPE;
-    }
+
   } catch (error) {
-    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
+      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
   }
 };
 

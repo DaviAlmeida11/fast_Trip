@@ -69,9 +69,11 @@ const listarSeguidorId = async function (id) {
   }
 
 }
-const inserirSeguidor = async function (seguidor, contentType) {
+const inserirSeguidor = async function (seguidor, contentType, foto) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
   try {
+
+    
     if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
       let validarDados = validarDadosSeguidor(seguidor)
 

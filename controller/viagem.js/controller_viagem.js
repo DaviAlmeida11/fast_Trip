@@ -8,6 +8,7 @@
 //Import do arquivo DAO para manipular o CRUD no BD
 const viagemDAO = require('../../model/dao/viagem.js')
 
+
 //Import do arquivo que padroniza todas as mensagens
 const MESSAGE_DEFAULT = require('../modulo/message_conf.js')
 

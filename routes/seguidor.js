@@ -7,6 +7,19 @@ const bodyParser = require('body-parser')
 const bodyParserJson = bodyParser.json()
 
 
+const multer = require('multer')
+
+
+//Configuração para o multer enviar o arquivo de imagem 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+      cb(null, 'uploads/')
+    }
+})
+
+const upload = multer()
+
+
 //configurção do cors 
 const router = express.Router()
 router.use((request, response, next) => {
@@ -38,12 +51,17 @@ router.get('/:id', cors(), async function (request, response) {
 })
 
 
-router.post('/', cors(), bodyParserJson, async function (request, response) {
+router.post('/', cors(), bodyParserJson, upload.single('img'), async function (request, response) {
 
     let dadosBody = request.body;
+
+    let img = request.params
+
     let contentType = request.headers['content-type']
 
-    let seguidor = await controllerSeguidor.inserirSeguidor(dadosBody, contentType)
+
+
+    let seguidor = await controllerSeguidor.inserirSeguidor(dadosBody, contentType, img)
 
 
     response.status(seguidor.status_code)

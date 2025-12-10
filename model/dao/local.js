@@ -68,8 +68,8 @@ const getSelectLastId = async function () {
 
 const setInsertLocal = async function (local) {
     try {
-        let sql = `insert into tb_local(nome, estado, pais, cidade 
-        )values('${local.nome}', '${local.estado}', '${local.pais}', '${local.cidade}')`
+        let sql = `insert into tb_local(estado, pais, cidade 
+        )values('${local.estado}', '${local.pais}', '${local.cidade}')`
 
         let result = await prisma.$executeRawUnsafe(sql)
         if (result) {

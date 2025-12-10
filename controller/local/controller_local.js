@@ -196,11 +196,7 @@ const validarDadosLocal = async function (local) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
 
-  if (local.nome == '' || local.nome == null || local.nome == undefined || local.nome.length > 100) {
-    MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [NOME] invalido`
-    return MESSAGE.ERROR_REQUIRED_FIELDS //400
-
-  } else if (local.estado == '' || local.estado == null || local.estado == undefined || local.estado.length > 2) {
+ if (local.estado == '' || local.estado == null || local.estado == undefined || local.estado.length > 2) {
     MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [ESTADO] invalido`
     return MESSAGE.ERROR_REQUIRED_FIELDS //400
   } else if (local.pais == '' || local.pais == null || local.pais == undefined || local.estado.length > 5) {

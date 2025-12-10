@@ -199,7 +199,7 @@ const validarDadosComentario = function (comentario) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     // NOME
-    if (comentario.nome == '' || comentario.nome == null || comentario.nome == undefined || comentario.nome.length > 100) {
+    if (comentario.conteudo == '' || comentario.conteudo == null || comentario.conteudo == undefined || comentario.nome.length > 600) {
         MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [NOME] invalido`
         return MESSAGE.ERROR_REQUIRED_FIELDS //400
 

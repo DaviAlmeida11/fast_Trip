@@ -72,8 +72,8 @@ const setInsertComentario = async function (comentario) {
 
 
     try {
-        let sql = `insert into tb_comentario(nome, id_diario, id_usuario
-          )values('${comentario.nome}', '${comentario.id_diario}', '${comentario.id_usuario}')`
+        let sql = `insert into tb_comentario(conteudo, id_diario, id_usuario
+          )values('${comentario.conteudo}', '${comentario.id_diario}', '${comentario.id_usuario}')`
 
         let result = await prisma.$executeRawUnsafe(sql)
         if (result) {
@@ -94,18 +94,18 @@ const setUpdateComentario = async function (comentario) {
     try {
         let sql = `update tb_comentario
          set 
-         nome ='${comentario.nome}',
+         conteudo ='${comentario.conteudo}',
          id_diario = '${comentario.id_diario}',
          id_usuario = '${comentario.id_usuario}'
          where id_comentario = '${comentario.id}'`
-console.log(sql)
+
         let result = await prisma.$executeRawUnsafe(sql)
         if (result) {
             return result
         } else {
             return false
         }
-    } catch (error) { console.log(error)
+    } catch (error) {
 
         return false
     }
