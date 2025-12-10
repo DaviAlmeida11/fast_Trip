@@ -31,17 +31,17 @@ router.get('/', cors(), async function (request, response) {
 router.get('/:id', cors(), async function (request, response){
     let idDiarioTipoViagem = request.params.id
 
-    let diario = await controllerDiarioTipoViagem.listarTiposViagemPorDiarioId(idDiarioTipoViagem)
+    let diario = await controllerDiarioTipoViagem.buscarDiarioTipoViagemId(idDiarioTipoViagem)
     response.status(diario.status_code)
     response.json(diario)  
 
 
 })
 
-router.get('/viagem/:id', cors(), async function (request, response){
+router.get('/diario/:id', cors(), async function (request, response){
     let idDiarioTipoViagem = request.params.id
 
-    let diario = await controllerDiarioTipoViagem.buscarDiarioTipoViagemId(idDiarioTipoViagem)
+    let diario = await controllerDiarioTipoViagem.listarTiposViagemPorDiarioId(idDiarioTipoViagem)
     response.status(diario.status_code)
     response.json(diario)  
 

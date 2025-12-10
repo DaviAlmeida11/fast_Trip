@@ -31,7 +31,7 @@ router.get('/', cors(), async function (request, response) {
 router.get('/:id', cors(), async function (request, response){
     let idUsuarioViagem   = request.params.id
 
-    let usuarioViagem  = await controllerUsuarioSeguidor.buscarUsuarioSeguidorId(idUsuarioViagem)
+    let usuarioViagem  = await controllerUsuaroVIagem.buscarUsuarioViagemId(idUsuarioViagem)
     response.status(usuarioViagem.status_code)
     response.json(usuarioViagem)  
 
@@ -70,7 +70,7 @@ router.put('/:id', cors(), bodyParserJson, async function (request, response) {
 
     let contentType = request.headers['content-type']
     
-    let usuarioViagem  = await controllerUsuarioSeguidor.atualizarUsuarioSeguidor(dadosBody, idUsuarioViagem , contentType)
+    let usuarioViagem  = await controllerUsuaroVIagem.atualizarUsuarioViagem(dadosBody, idUsuarioViagem , contentType)
 
     response.status(usuarioViagem.status_code)
     response.json(usuarioViagem)
@@ -89,8 +89,8 @@ router.delete('/usuario/:id', cors(), async function (request, response) {
     let idUsuarioViagem  = request.params.id
 
     let usuarioViagem  = await controllerUsuaroVIagem.excluirUsuarioViagemByUsuarioId(idUsuarioViagem)
-    response.status(usuarioSeguidor.status_code)
-    response.json(usuarioViagem)
+    response.status(usuarioViagem.status_code)
+    response.json(usuarioViagem )
 
 })
 

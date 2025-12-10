@@ -28,7 +28,7 @@ router.get('/', cors(), async function (request, response) {
     response.json(usuarioSeguidor)    
 })
 
-router.get('/usuario/:id', cors(), async function (request, response){
+router.get('/:id', cors(), async function (request, response){
     let idUsuarioSeguidor  = request.params.id
 
     let usuarioSeguidor  = await controllerUsuarioSeguidor.buscarUsuarioSeguidorId(idUsuarioSeguidor)
@@ -39,7 +39,7 @@ router.get('/usuario/:id', cors(), async function (request, response){
 })
 
 
-router.get('/seguidor/:id', cors(), async function (request, response){
+router.get('/usuario/:id', cors(), async function (request, response){
     let idUsuarioSeguidor  = request.params.id
 
     let usuarioSeguidor  = await controllerUsuarioSeguidor.listarSeguidoresUsuarioId(idUsuarioSeguidor )
@@ -87,7 +87,7 @@ router.delete('/:id', cors(), async function (request, response) {
 
 })
 
-router.delete('/seguidor/:id', cors(), async function (request, response) {
+router.delete('/usuario/:id', cors(), async function (request, response) {
     let idUsuarioSeguidor = request.params.id
 
     let usuarioSeguidor = await controllerUsuarioSeguidor.excluirSeguidoresByUsuarioId(idUsuarioSeguidor)

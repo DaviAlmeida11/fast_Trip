@@ -7,10 +7,10 @@
  **********************************************************************************************/
 
 // Import do DAO
-const usuarioViagemDAO = require('../../model/dao/usuario_viagem.js');
+const usuarioViagemDAO = require('../../model/dao/usuarioViagem.js');
 
 // Import das mensagens padrão
-const MESSAGE_DEFAULT = require('../modulo/config_messages.js');
+const MESSAGE_DEFAULT = require('../modulo/message_conf.js');
 
 //  LISTAR TODOS USUARIOS
 

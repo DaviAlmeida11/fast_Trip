@@ -84,7 +84,7 @@ const setInsertDiaryTravelType = async function (data) {
     } else {
       return false;
     }
-  } catch (error) {
+  } catch (error) { console.log(error)
     return false;
   }
 };
