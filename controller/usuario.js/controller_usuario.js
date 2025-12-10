@@ -14,7 +14,7 @@ const userDAO = require('../../model/dao/usuario')
 
 const MESSAGE_DEFAULT = require('../modulo/message_conf')
 
-const fetch = (...args) => import('node-fetch').then(({default : fetch}) => fetch(...args))
+
   
 
 
