@@ -1,34 +1,60 @@
+/***************************************************************************************
+ * Objetivo: Arquivo resposnsável por realizar UPLOAD de arquivos na Azure
+ * Data: 20/06/2025
+ * Autor: Marcel
+ * Versão: 1.0
+ * Obs: Para fazer funcionar o upload precisa instalar a biblioteca para fazer o Fetch e 
+ *          o Multer para receber o arquivo no APP
+***************************************************************************************/
 
-// Import do arquivo da configuraçãp da azure
-const AZURE = require('../modulo/config_upload_azure')
+//Import dos dados de configuração da AZURE
+const AZURE = require('../modulo/config_upload_azure.js')
 
-// Import da dependecia para realizar uma requizição http pelo node 
+//Import da biblioteca para fazer requisições pelo Back-end
+const fetch = require('node-fetch').default
+
+//Função para realizar o upload de arquivos no servidor da Azure
+const uploadFiles = async function(file){
+
+    //Configura os os tipos de dados aceitos na API
+    let arrayAllowTypes = ['JPG', 'PNG', 'JPEG']
+    //Recebe a extensão do arquivo
+    let mimeType = String(file.mimetype).split('/')[1].toUpperCase()
+    //Recebe o tamanho do arquivo e transforma em kb
+    let lengthFile = Number(file.size) / 1024
 
 
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
+    console.log (lengthFile)
+    //Validação do tipo de extensão e do tamanho do arquivo
+    if(arrayAllowTypes.indexOf(mimeType) != -1 && lengthFile.toFixed(1) <= 5000){
 
-const upliadFiles = async function (file) {
-    let fileName = `${Date.now()}-${file.originalname}`;
+        //Cria o nome do arquivo com a data e hora atual
+        let fileName = Date.now() + file.originalname
 
-    let urlFile = `https://${AZURE.ACCOUNT}.blob.core.windows.net/${AZURE.CONTAINER}/${fileName}`;
-    let urlFileToken = `${urlFile}?${AZURE.TOKEN}`;
+        //URL para realizar a requisição para o servidor da AZURE
+        let urlFile         = `https://${AZURE.ACCOUNT}.blob.core.windows.net/${AZURE.CONTAINER}/${fileName}`
 
-    let response = await fetch(urlFileToken, {
-        method: 'PUT',
-        headers: {
-            'x-ms-blob-type': 'BlockBlob',
-            'Content-Type': 'application/octet-stream'
-        },
-        body: file.buffer
-    });
+        //URL do arquivo + token de autenticação
+        let urlFileToken    = `${urlFile}?${AZURE.TOKEN}`
 
-    if (response.status === 201)
-        return urlFile;
-    else
-        return false;
+        //Realiza a requisição no servidor da AZURE e encaminha no body o file
+        let response = await fetch(urlFileToken, {
+            method: 'PUT',
+            headers: {
+                'x-ms-blob-type': 'BlockBlob',
+                'Content-Type': 'application/octet-stream'
+            },
+            body: file.buffer
+        })
+
+        console.log(response)
+        if(response.status == 201)
+            return urlFile
+        else
+            return false
+    }else{
+        return false
+    }
 }
 
-
-module.exports = {
-    upliadFiles
-}
+module.exports = {uploadFiles}

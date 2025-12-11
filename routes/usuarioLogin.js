@@ -35,8 +35,8 @@ router.post('/', cors(), bodyParserJson, async function (request, response) {
     
     // CHAMADA CORRETA - passe os valores SEPARADOS
     let usuario = await controllerUsuarioLogin.validarLoginUsuario(
-        dadosBody.email,    // string
-        dadosBody.senha     // string
+        dadosBody.email,    
+        dadosBody.senha     
     )
 
     response.status(usuario.status_code)

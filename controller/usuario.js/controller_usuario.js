@@ -77,46 +77,60 @@ const listarUsuarioId = async function (id) {
   }
 }
 
-const inserirUsuario = async function (dados, img) {
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
+const inserirUsuario = async function (dados, img, contentType) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-  try {
+    try {
+        // Verificação do Content-Type
+        if (!contentType || !contentType.toLowerCase().includes('multipart/form-data')) {
+            return MESSAGE.ERROR_CONTENT_TYPE; // 415
+        }
 
+        // Validação de campos obrigatórios
+        if (!dados.email || !dados.senha) {
+            MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
+            return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
+        }
 
-      if (!dados.email || !dados.senha) {
-          MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
-          return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
-      }
+        // Criptografia da senha
+        dados.senha = await cripitografia.criptografarSenha(dados.senha);
 
-     
-      dados.senha = await cripitografia.criptografarSenha(dados.senha);
+        // Valida se o arquivo foi enviado corretamente
+        if (!img || !img.originalname || !img.buffer) {
+            console.log("Arquivo de imagem inválido:", img);
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
-     
-      let urlImg = await UPLOAD.upliadFiles(img);
-console.log(urlImg)
-      if (urlImg) {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-      }
+        // Upload da imagem
+        let urlImg = await UPLOAD.uploadFiles(img);
 
-      dados.capa = urlImg;
+        if (!urlImg) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
-      let resultado = await userDAO.insertUsuario(dados);
+        // Adiciona a URL da imagem nos dados
+        dados.capa = urlImg;
 
-      if (resultado) {
-          MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
-          MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
-          MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
-          MESSAGE.HEADER.response = dados;
+        // Inserção no banco
+        let resultado = await userDAO.insertUsuario(dados);
 
-          return MESSAGE.HEADER;
-      } else {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-      }
+        if (resultado) {
+            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
+            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
+            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
+            MESSAGE.HEADER.response = dados;
 
-  } catch (error) { 
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
-  }
+            return MESSAGE.HEADER;
+        } else {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+    } catch (error) {
+        console.log("Erro inserirUsuario:", error);
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+    }
 }
+
 const atualizarUsuario = async function(usuario, id, contentType) {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))

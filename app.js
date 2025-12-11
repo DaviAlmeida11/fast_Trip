@@ -8,6 +8,21 @@
 //Import das bibliotecas para criar a API
 const express = require('express')
 const cors = require('cors')
+const multer        = require('multer')  
+
+//Configuração do diskmanager para o MULTER
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // Define o diretório onde os arquivos serão salvos.
+        // Certifique-se de que o diretório 'uploads/' existe na raiz do seu projeto!
+        cb(null, 'uploads/');
+    
+    }
+});
+
+// Inicializa o Multer com a configuração de armazenamento
+const upload = multer();
+
 
 
 const PORT = process.PORT || 8080
@@ -58,6 +73,8 @@ const usuarioViagemRoutes = require('./routes/usuarioViagem')
 
 const comentarioDiairoRoutes = require('./routes/comentarioDiario')
 
+const seguidorUsuarioRoutes = require('./routes/seguidorUsario')
+
 
 
 
@@ -91,6 +108,8 @@ app.use('/v1/travel/diarioTipoViagem' , diarioTipoViagemRoutes)
 app.use('/v1/travel/usuarioVIagem', usuarioViagemRoutes)
 
 app.use('/v1/travel/comentarioDiario', comentarioDiairoRoutes)
+
+app.use('/v1/travel/seguidorUsuario', seguidorUsuarioRoutes)
 
 
 

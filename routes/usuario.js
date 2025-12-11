@@ -1,23 +1,21 @@
 //Import das bibliotecas para criar a API
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const express       = require('express')
+const cors          = require('cors')
+const bodyParserJson    = require('body-parser')
+const multer        = require('multer')  
 
-// CRIA UM FORMATO JSON
-const bodyParserJson = bodyParser.json()
-
-const multer = require('multer')
-
-
-//Configuração para o multer enviar o arquivo de imagem 
+//Configuração do diskmanager para o MULTER
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-      cb(null, 'uploads/')
+    destination: function (req, file, cb) {
+        // Define o diretório onde os arquivos serão salvos.
+        // Certifique-se de que o diretório 'uploads/' existe na raiz do seu projeto!
+        cb(null, 'uploads/');
+    
     }
 })
 
-const upload = multer()
-
+// Inicializa o Multer com a configuração de armazenamento
+const upload = multer();
 
 //configurção do cors 
 const router = express.Router()
@@ -29,9 +27,7 @@ router.use((request, response, next ) => {
     next()
 })
 
-// ENDPOINTS DA TABELA Usuario
-
-const controllerUsuario = require('../controller/usuario.js/controller_usuario')
+const controllerUsuario = require('../controller/usuario.js/controller_usuario');
 
 router.get('/', cors(), async function (request, response) {
     let usuario = await controllerUsuario.listarUsuarios()
@@ -50,20 +46,19 @@ router.get('/:id', cors(), async function (request, response){
 
 })
 
-router.post('/', cors(), upload.single('img'), async function (request, response) {
+router.post('/', upload.single('img'), async (req, res) => {
+    const dadosBody = req.body; // outros campos do formulário
+    const img = req.file;       // arquivo enviado
+    const contentType = req.headers['content-type'];
 
-    console.log("FILE RECEBIDO:", request.file); // debug
+    const usuario = await controllerUsuario.inserirUsuario(dadosBody, img, contentType);
+    console.log(usuario);
 
-    let dadosBody = request.body;
-    let contentType = request.headers['content-type'];
-
-    let img = request.file;
-
-    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType, img);
-
-    response.status(usuario.status_code);
-    response.json(usuario);
+    res.status(usuario.status_code).json(usuario);
 });
+
+
+
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
 
