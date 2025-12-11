@@ -109,7 +109,7 @@ const listarSeguidoresUsuarioId = async function (usuarioId) {
 };
 
 //INSERIR VÍNCULO
-const inserirUsuario = async function (dados, foto, contentType) {
+const inserirUsuarioSeguidor = async function (dados, foto, contentType) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {

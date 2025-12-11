@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
 const buscarUsuarioPorEmail = async function (email) {
     try {
         let sql = `
-            SELECT 
+            SELECT id_usuario,
                 nome,
                 nickname,
                 email, 

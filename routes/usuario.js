@@ -50,19 +50,20 @@ router.get('/:id', cors(), async function (request, response){
 
 })
 
-router.post('/', cors(), bodyParserJson, upload.single('img'), async function (request, response) {
+router.post('/', cors(), upload.single('img'), async function (request, response) {
 
+    console.log("FILE RECEBIDO:", request.file); // debug
 
     let dadosBody = request.body;
-    let contentType = request.headers['content-type']
+    let contentType = request.headers['content-type'];
 
-    let img = request.file
-    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType, img)
+    let img = request.file;
 
-    response.status(usuario.status_code)
-    response.json(usuario)
-})
+    let usuario = await controllerUsuario.inserirUsuario(dadosBody, contentType, img);
 
+    response.status(usuario.status_code);
+    response.json(usuario);
+});
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
 

@@ -113,7 +113,7 @@ const inserirComentario = async function (comentario, contentType) {
             return MESSAGE.ERROR_CONTENT_TYPE;
         }
 
-    } catch (error) {
+    } catch (error) { console.log(error)
 
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
     }
@@ -199,7 +199,7 @@ const validarDadosComentario = function (comentario) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
     // NOME
-    if (comentario.conteudo == '' || comentario.conteudo == null || comentario.conteudo == undefined || comentario.nome.length > 600) {
+    if (comentario.conteudo == '' || comentario.conteudo == null || comentario.conteudo == undefined || comentario.conteudo.length > 600) {
         MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [NOME] invalido`
         return MESSAGE.ERROR_REQUIRED_FIELDS //400
 

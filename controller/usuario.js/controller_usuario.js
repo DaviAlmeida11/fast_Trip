@@ -77,7 +77,7 @@ const listarUsuarioId = async function (id) {
   }
 }
 
-const inserirUsuario = async function (dados, foto) {
+const inserirUsuario = async function (dados, img) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
@@ -92,13 +92,13 @@ const inserirUsuario = async function (dados, foto) {
       dados.senha = await cripitografia.criptografarSenha(dados.senha);
 
      
-      let urlFoto = await UPLOAD.upliadFiles(foto);
-
-      if (!urlFoto) {
+      let urlImg = await UPLOAD.upliadFiles(img);
+console.log(urlImg)
+      if (urlImg) {
           return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
       }
 
-      dados.capa = urlFoto;
+      dados.capa = urlImg;
 
       let resultado = await userDAO.insertUsuario(dados);
 

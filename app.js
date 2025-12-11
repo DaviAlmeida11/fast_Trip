@@ -8,17 +8,7 @@
 //Import das bibliotecas para criar a API
 const express = require('express')
 const cors = require('cors')
-const multer = require('multer')
 
-
-//Configuração para o multer enviar o arquivo de imagem 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-      cb(null, 'uploads/')
-    }
-})
-//instancia para criar um objteto com as caracteristicas do multer
-const upload = multer()
 
 const PORT = process.PORT || 8080
 
@@ -34,6 +24,8 @@ app.use((request, response, next) => {
     app.use(express.json())
     next()
 })
+
+
 
 // importação das rotas 
 const usuarioRoutes = require('./routes/usuario')
@@ -63,6 +55,8 @@ const usuarioSeguidorRoutes = require('./routes/usurio_seguidor')
 const diarioTipoViagemRoutes = require('./routes/DIario_tipo_viagem')
 
 const usuarioViagemRoutes = require('./routes/usuarioViagem')
+
+const comentarioDiairoRoutes = require('./routes/comentarioDiario')
 
 
 
@@ -95,6 +89,8 @@ app.use('/v1/traevl/usuarioSeguidor', usuarioSeguidorRoutes)
 app.use('/v1/travel/diarioTipoViagem' , diarioTipoViagemRoutes)
 
 app.use('/v1/travel/usuarioVIagem', usuarioViagemRoutes)
+
+app.use('/v1/travel/comentarioDiario', comentarioDiairoRoutes)
 
 
 
