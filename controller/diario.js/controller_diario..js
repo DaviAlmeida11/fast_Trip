@@ -97,7 +97,7 @@ const inserirDiario = async function (dados, img, contentType) {
         }
 
         // Adiciona a URL da imagem nos dados
-        dados.capa = urlImg;
+        dados.img = urlImg;
 
         // Inserção no banco
         let resultado = await diarioDAO.setInsertDiairio(dados);
