@@ -35,9 +35,10 @@ const getSelectAllDiario = async function () {
 
 const getSelectDIarioById = async function (id) {
     try {
-        let sql = 'select * from tb_diario order by id_diario desc'
+        let sql = `select * from tb_diario where id_diario = ${id}`
 
         let result = await prisma.$queryRawUnsafe(sql)
+        console.log(result)
         if (result) {
             return result
         } else {
@@ -152,9 +153,9 @@ WHERE id_diario = ${diario.id};
     }
 }
 
-const setDeleteComentario = async function (id) {
+const setDeleteDiairio = async function (id) {
     try {
-        let sql = `delete from tb_comentario where id_comentario = ${id}`
+        let sql = `delete from tb_diario where id_diario = ${id}`
 
         let result = await prisma.$executeRawUnsafe(sql)
 
@@ -176,5 +177,5 @@ module.exports = {
     getSelectLastId,
     setInsertDiairio,
     setupdateDiario,
-    setDeleteComentario
+    setDeleteDiairio 
 }

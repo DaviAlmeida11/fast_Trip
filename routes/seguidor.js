@@ -1,25 +1,20 @@
 //Import das bibliotecas para criar a API
 const express = require('express')
 const cors = require('cors')
-const bodyParser = require('body-parser')
+const bodyParserJson    = require('body-parser')
+const multer        = require('multer')  
 
-// CRIA UM FORMATO JSON
-const bodyParserJson = bodyParser.json()
-
-
-const multer = require('multer')
-
-
-//Configuração para o multer enviar o arquivo de imagem 
+//Configuração do diskmanager para o MULTER
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-      cb(null, 'uploads/')
+    destination: function (req, file, cb) {
+        // Define o diretório onde os arquivos serão salvos.
+        // Certifique-se de que o diretório 'uploads/' existe na raiz do seu projeto!
+        cb(null, 'uploads/');
+    
     }
-})
+});
 
-const upload = multer()
-
-
+const upload = multer();
 //configurção do cors 
 const router = express.Router()
 router.use((request, response, next) => {
@@ -50,24 +45,23 @@ router.get('/:id', cors(), async function (request, response) {
 
 })
 
+router.post('/', cors(), upload.single('img'), async function(request, response){
+    //Recebe o objeto JSON pelo body da requisição
+    let dadosBody = request.body
 
-router.post('/', cors(), bodyParserJson, upload.single('img'), async function (request, response) {
-
-    let dadosBody = request.body;
-
-    let img = request.params
-
+    //Recebe o content type da requisição
     let contentType = request.headers['content-type']
 
-
-
-    let seguidor = await controllerSeguidor.inserirSeguidor(dadosBody, contentType, img)
-
+    let foto       = request.file
+console.log(foto)
+    //Chama a função da controller para inserir o seguidor, enviamos os dados do body e o content-type
+    let seguidor = await controllerSeguidor.inserirSeguidor(dadosBody, foto, contentType )
+    
 
     response.status(seguidor.status_code)
     response.json(seguidor)
-})
 
+})
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
 

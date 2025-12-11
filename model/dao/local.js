@@ -35,7 +35,7 @@ const getSelectAllLocal = async function () {
 
 const getSelectLocalById = async function (id) {
     try {
-        let sql = 'select * from tb_local order by id_local desc'
+        let sql = `select * from tb_local where id_local =${id}`
 
         let result = await prisma.$queryRawUnsafe(sql)
         if (result) {
@@ -91,7 +91,9 @@ const updateLocal = async function (local) {
         nome ='${local.nome}',
         estado = '${local.estado}',
         pais = '${local.pais}',
-        cidade = '${local.cidade}'`
+        cidade = '${local.cidade}'
+        where id_local = ${local.id}`
+        
 
         let result = await prisma.$executeRawUnsafe(sql)
         if (result) {

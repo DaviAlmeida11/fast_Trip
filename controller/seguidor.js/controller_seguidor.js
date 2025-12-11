@@ -10,6 +10,8 @@ const seguidorDAO = require('../../model/dao/seguidor.js')
 
 const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
+const UPLOAD = require('../upload/controller_upload_azure.js')
+
 
 
 const listarSeguidor = async function () {
@@ -69,47 +71,49 @@ const listarSeguidorId = async function (id) {
   }
 
 }
-const inserirSeguidor = async function (seguidor, contentType, foto) {
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
-  try {
+const inserirSeguidor = async function (dados, img, contentType) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-    
-    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
-      let validarDados = validarDadosSeguidor(seguidor)
-
-
-
-      if (!validarDados) {
-        let result = await seguidorDAO.setInsertSeguidor(seguidor)
-       
-
-        if (result) {
-          let lastIdSeguidor = await seguidorDAO.getSelectLastId()
-
-          if (lastIdSeguidor) {
-            seguidor.id = lastIdSeguidor
-            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status
-            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code
-            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message
-            MESSAGE.HEADER.response = seguidor
-
-            return MESSAGE.HEADER
-          } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL // 500
-          }
-        } else {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+    try {
+        // Verificação do Content-Type
+        if (!contentType || !contentType.toLowerCase().includes('multipart/form-data')) {
+            return MESSAGE.ERROR_CONTENT_TYPE; // 415
         }
-      } else {
-        return validarDados
-      }
-    } else {
-      return MESSAGE.ERROR_CONTENT_TYPE //415
-    }
 
-  } catch (error) { 
-    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
-  }
+        // Valida se o arquivo foi enviado corretamente
+        if (!img || !img.originalname || !img.buffer) {
+            console.log("Arquivo de imagem inválido:", img);
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+        // Upload da imagem
+        let urlImg = await UPLOAD.uploadFiles(img);
+
+        if (!urlImg) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+        // Adiciona a URL da imagem nos dados
+        dados.capa = urlImg;
+
+        // Inserção no banco
+        let resultado = await seguidorDAO.setInsertSeguidor(dados);
+
+        if (resultado) {
+            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
+            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
+            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
+            MESSAGE.HEADER.response = dados;
+
+            return MESSAGE.HEADER;
+        } else {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+    } catch (error) {
+        console.log("Erro inserirUsuario:", error);
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+    }
 }
 
 const atualizarSeguidor = async function(seguidor, id, contentType) {

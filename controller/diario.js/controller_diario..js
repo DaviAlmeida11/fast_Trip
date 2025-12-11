@@ -11,6 +11,9 @@ const diarioDAO = require('../../model/dao/diario.js')
 
 const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
+const UPLOAD = require('../upload/controller_upload_azure.js')
+
+
 
 
 const listarDiario = async function () {
@@ -21,7 +24,7 @@ const listarDiario = async function () {
     //Chama a função do DAO para retornar a lista de diretores
     let result = await diarioDAO.getSelectAllDiario()
 
-    if (result) {
+    if (result) { 
       if (result.length > 0) {
         MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
         MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
@@ -49,11 +52,11 @@ const listarDiarioId = async function (id) {
 
       if (result) {
         if (result.length > 0) {
-          MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
-          MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
-          MESSAGE.HEADER.response.diario
-          MESSAGE.HEADER.response.diario = result
-          return MESSAGE.HEADER
+            MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
+            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
+            MESSAGE.HEADER.response.diario
+            MESSAGE.HEADER.response.diario = result
+            return MESSAGE.HEADER
 
         } else {
           return MESSAGE.ERROR_NOT_FOUND //404
@@ -71,53 +74,50 @@ const listarDiarioId = async function (id) {
 }
 
 
-const inserirDiario = async function (diario, contentType) {
+const inserirDiario = async function (dados, img, contentType) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
+    try {
+        // Verificação do Content-Type
+        if (!contentType || !contentType.toLowerCase().includes('multipart/form-data')) {
+            return MESSAGE.ERROR_CONTENT_TYPE; // 415
+        }
 
-  try {
-    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
+        // Valida se o arquivo foi enviado corretamente
+        if (!img || !img.originalname || !img.buffer) {
+            console.log("Arquivo de imagem inválido:", img);
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
+        // Upload da imagem
+        let urlImg = await UPLOAD.uploadFiles(img);
 
-      let validacao = await validarDadosDiario(diario)
+        if (!urlImg) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
+        // Adiciona a URL da imagem nos dados
+        dados.capa = urlImg;
 
-      if (!validacao) {
+        // Inserção no banco
+        let resultado = await diarioDAO.setInsertDiairio(dados);
 
-        let result = await diarioDAO.setInsertDiairio(diario);
-
-        if (result) {
-          let lastIdDiario = await diarioDAO.getSelectLastId();
-
-          if (lastIdDiario) {
-
-            diario.id = lastIdDiario
-
+        if (resultado) {
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
             MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
-            MESSAGE.HEADER.response = diario
+            MESSAGE.HEADER.response = dados;
 
             return MESSAGE.HEADER;
-          } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
-          }
         } else {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
-      } else {
-        return validacao;
-      }
-    } else {
-      return MESSAGE.ERROR_CONTENT_TYPE;
+
+    } catch (error) {
+        console.log("Erro inserirUsuario:", error);
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }
-
-  } catch (error) { 
-
-    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
-  }
 }
-
 
 const atualizarDiario = async function (diario, id, contentType) {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
@@ -173,7 +173,7 @@ const excluirDiairo = async function (id) {
     if (validarId.status_code == 200) {
 
 
-      let result = await diarioDAO.setDeleteDiario(id)
+      let result = await diarioDAO.setDeleteDiairio(id)
 
       if (result) {
         MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETED_ITEM.status

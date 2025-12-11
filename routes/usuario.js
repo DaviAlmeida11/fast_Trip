@@ -12,11 +12,10 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     
     }
-})
+});
 
 // Inicializa o Multer com a configuração de armazenamento
 const upload = multer();
-
 //configurção do cors 
 const router = express.Router()
 router.use((request, response, next ) => {
@@ -46,19 +45,23 @@ router.get('/:id', cors(), async function (request, response){
 
 })
 
-router.post('/', upload.single('img'), async (req, res) => {
-    const dadosBody = req.body; // outros campos do formulário
-    const img = req.file;       // arquivo enviado
-    const contentType = req.headers['content-type'];
+router.post('/', cors(), upload.single('img'), async function(request, response){
+    //Recebe o objeto JSON pelo body da requisição
+    let dadosBody = request.body
 
-    const usuario = await controllerUsuario.inserirUsuario(dadosBody, img, contentType);
-    console.log(usuario);
+    //Recebe o content type da requisição
+    let contentType = request.headers['content-type']
 
-    res.status(usuario.status_code).json(usuario);
-});
+    let foto       = request.file
 
+    //Chama a função da controller para inserir o usuario, enviamos os dados do body e o content-type
+    let usuario = await controllerUsuario.inserirUsuario(dadosBody, foto, contentType )
+    console.log(usuario)
 
+    response.status(usuario.status_code)
+    response.json(usuario)
 
+})
 router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     let dadosBody = request.body
 

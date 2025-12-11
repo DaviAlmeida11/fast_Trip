@@ -175,32 +175,32 @@ const atualizarUsuario = async function(usuario, id, contentType) {
   }
 }
 
-const excluirUsuario = async function (id) {
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+  const excluirUsuario = async function (id) {
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
-  try {
-      let validarId = await listarUsuarioId(id)
-     
+    try {
+        let validarId = await listarUsuarioId(id)
+      
 
-      if(validarId.status_code == 200){
-          let result = await userDAO.setDeleteUser(id)
+        if(validarId.status_code == 200){
+            let result = await userDAO.setDeleteUser(id)
 
-          if(result){
-              MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETED_ITEM.status
-              MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETED_ITEM.status_code
-              MESSAGE.HEADER.message = MESSAGE.SUCCESS_DELETED_ITEM.message
+            if(result){
+                MESSAGE.HEADER.status = MESSAGE.SUCCESS_DELETED_ITEM.status
+                MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_DELETED_ITEM.status_code
+                MESSAGE.HEADER.message = MESSAGE.SUCCESS_DELETED_ITEM.message
 
-              return MESSAGE.HEADER //200
-          }else{
-              return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
-          }
-      }else{
-          return validarId
-      }
-  } catch (error) {
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+                return MESSAGE.HEADER //200
+            }else{
+                return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }else{
+            return validarId
+        }
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
   }
-}
 
 
 

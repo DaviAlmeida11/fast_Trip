@@ -81,11 +81,11 @@ const insertUsuario = async function (usuario) {
                     '${usuario.email}',
                     '${usuario.senha}',
                     '${usuario.genero}',
-                     ${usuario.img},
+                     '${usuario.img}',
                     '${usuario.criado_em}',
                     '${usuario.atualizado_em}'
                 )`
-
+console.log(sql)
         } else {
 
             sql = `INSERT INTO tb_usuario
@@ -100,6 +100,7 @@ const insertUsuario = async function (usuario) {
                     '${usuario.criado_em}',
                     '${usuario.atualizado_em}'
                 )`
+                
 
         }
         let result = await prisma.$executeRawUnsafe(sql)
@@ -111,7 +112,7 @@ const insertUsuario = async function (usuario) {
             return false
         }
 
-    } catch (error) { 
+    } catch (error) { console.log(error)
         return false
     }
 
@@ -172,20 +173,20 @@ const setupdateUser = async function (usuario) {
     }
 }
 
-const setDeleteUser = async function (id) {
-    try {
-        let sql = `delete from tb_usuario where id_usuario = ${id}`
-        let result = await prisma.$executeRawUnsafe(sql)
+    const setDeleteUser = async function (id) {
+        try {
+            let sql = `delete from tb_usuario where id_usuario = ${id}`
+            let result = await prisma.$executeRawUnsafe(sql)
 
-        if (result) {
-            return result
-        } else {
+            if (result) {
+                return result
+            } else {
+                return false
+            }
+        } catch (error) {
             return false
         }
-    } catch (error) {
-        return false
     }
-}
 
 
 

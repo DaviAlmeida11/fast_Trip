@@ -1,7 +1,7 @@
 /***************************************************************************************
  * Objetivo: Arquivo resposnsável por realizar UPLOAD de arquivos na Azure
  * Data: 20/06/2025
- * Autor: Marcel
+ * Autor: Davi
  * Versão: 1.0
  * Obs: Para fazer funcionar o upload precisa instalar a biblioteca para fazer o Fetch e 
  *          o Multer para receber o arquivo no APP

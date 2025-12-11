@@ -36,7 +36,7 @@ const getSelectAllComentario = async function () {
 
 const getSelectComentarioById = async function (id) {
     try {
-        let sql = 'select * from tb_comentario order by id_comentario desc'
+        let sql = `select * from tb_comentario where id_comentario = ${id}`
 
         let result = await prisma.$queryRawUnsafe(sql)
         if (result) {
