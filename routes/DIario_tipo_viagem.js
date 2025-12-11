@@ -48,6 +48,26 @@ router.get('/diario/:id', cors(), async function (request, response){
 
 })
 
+router.get('/tipoViagem/:id', cors(), async function (request, response){
+    let idDiarioTipoViagem = request.params.id
+
+    let diario = await controllerDiarioTipoViagem.buscarDiarioTipoViagemIdTipoViagem(idDiarioTipoViagem)
+    response.status(diario.status_code)
+    response.json(diario)  
+
+
+})
+
+router.get('/informacoes/:id', cors(), async function (request, response){
+    let idDiarioTipoViagem = request.params.id
+
+    let diario = await controllerDiarioTipoViagem.BuscarInformaçõesImgIdTipoviagemDiairo(idDiarioTipoViagem)
+    response.status(diario.status_code)
+    response.json(diario)  
+
+
+})
+
 
 
 router.post('/', cors(), bodyParserJson, async function (request, response) {

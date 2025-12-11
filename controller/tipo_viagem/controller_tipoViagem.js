@@ -71,6 +71,7 @@ const buscarTipoViagensPorId = async function(id) {
     }
 }
 
+
 const inserirTipoViagens = async function(viagem, contentType) {
     //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))

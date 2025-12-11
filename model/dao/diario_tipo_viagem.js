@@ -20,7 +20,8 @@ const getSelectAllDiaryTravelType = async function () {
   } catch (error) {
     return false;
   }
-};
+}
+
 const getSelectByIdDiaryTravelType = async function (id) {
   try {
     let sql = `SELECT * FROM tb_diario_tipo_viagem WHERE id_diario_tipo_viagem = ${id}`;
@@ -33,7 +34,26 @@ const getSelectByIdDiaryTravelType = async function (id) {
   } catch (error) {
     return false;
   }
-};
+}
+
+const getSelectIdTipoviagemDiario = async function (id) {
+  try {
+    let sql = `select * from tb_diario_tipo_viagem where id_tipo_viagem = ${id}`
+    let result = await prisma.$queryRawUnsafe(sql);
+    if (Array.isArray(result)) {
+      return result;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+
+
+
+
 const getTravelTypesByDiaryId = async function (idDiario) {
   try {
     let sql = `
@@ -53,6 +73,32 @@ const getTravelTypesByDiaryId = async function (idDiario) {
     return false;
   }
 };
+
+const getSelectEspecifcInformations = async function (idDiario) {
+  try {
+    let sql = `SELECT 
+                 d.id_diario,
+                 d.nome AS nome_diario,
+                 d.img,
+                  t.nome AS nome_tipo_viagem
+                FROM tb_diario d
+                LEFT JOIN tb_tipo_viagem t
+                ON d.id_viagem = t.id_tipo_viagem
+                WHERE d.id_diario =  ${idDiario}
+                ORDER BY d.id_diario;`
+    let result = await prisma.$queryRawUnsafe(sql);
+    if (Array.isArray(result)) {
+      return result;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+
+
 
 const getSelectLastIdDiaryTravelType = async function () {
   try {
@@ -84,7 +130,8 @@ const setInsertDiaryTravelType = async function (data) {
     } else {
       return false;
     }
-  } catch (error) { console.log(error)
+  } catch (error) {
+    console.log(error)
     return false;
   }
 };
@@ -141,4 +188,6 @@ module.exports = {
   setUpdateDiaryTravelType,
   setDeleteDiaryTravelType,
   setDeleteDiaryTravelTypeByDiaryId,
+  getSelectIdTipoviagemDiario,
+  getSelectEspecifcInformations
 };

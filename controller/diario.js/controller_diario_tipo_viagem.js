@@ -71,19 +71,44 @@ const buscarDiarioTipoViagemId = async function (id) {
   }
 };
 
-//LISTAR TIPOS DE VIAGEM ASSOCIADOS A UM DIÁRIO POR ID DIÁRIO
+
+
+const buscarDiarioTipoViagemIdTipoViagem =  async function ( id) {
+      let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+
+    try {
+        if(id != '' && id != null && id != undefined && !isNaN(id) && id > 0){
+            let result = await diarioTipoViagemDAO.getSelectIdTipoviagemDiario(id)
+
+            if(result){
+                if(result.length > 0){
+                    MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
+                    MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code
+                    MESSAGE.HEADER.response.travels = result
+
+                    return MESSAGE.HEADER //200
+                }else{
+                    return MESSAGE.ERROR_NOT_FOUND //404
+                }
+            }else{
+                return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
+            }
+        }else{
+            MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [ID] invalido`
+            return MESSAGE.ERROR_REQUIRED_FIELDS //400
+        }
+    } catch (error) {
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    }
+}
+
+
 
 const listarTiposViagemPorDiarioId = async function (diarioId) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-    if (
-      diarioId != '' &&
-      diarioId != null &&
-      diarioId != undefined &&
-      !isNaN(diarioId) &&
-      diarioId > 0
-    ) {
+    if (  diarioId != '' &&diarioId != null &&diarioId != undefined &&!isNaN(diarioId) &&diarioId > 0) {
       let result = await diarioTipoViagemDAO.getTravelTypesByDiaryId(diarioId);
 
       if (result) {
@@ -108,6 +133,38 @@ const listarTiposViagemPorDiarioId = async function (diarioId) {
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
   }
 };
+
+
+const BuscarInformaçõesImgIdTipoviagemDiairo = async function (diarioId) {
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
+
+  try {
+    if (  diarioId != '' &&diarioId != null &&diarioId != undefined &&!isNaN(diarioId) &&diarioId > 0) {
+      let result = await diarioTipoViagemDAO.getSelectEspecifcInformations(diarioId);
+
+      if (result) {
+        if (result.length > 0) {
+          MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status;
+          MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code;
+          MESSAGE.HEADER.response.travel_types = result;
+
+          return MESSAGE.HEADER;
+        } else {
+          return MESSAGE.ERROR_NOT_FOUND;
+        }
+      } else {
+        return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
+      }
+    } else {
+      MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field =
+        'Atributo [ID_DIARIO] inválido!';
+      return MESSAGE.ERROR_REQUIRED_FIELDS;
+    }
+  } catch (error) {
+    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
+  }
+};
+
 
 //INSERIR
 
@@ -152,7 +209,7 @@ const inserirDiarioTipoViagem = async function (data, contentType) {
   }
 };
 
-//ATUALIZAR
+
 
 const atualizarDiarioTipoViagem = async function (data, id, contentType) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
@@ -199,13 +256,7 @@ const excluirDiarioTipoViagemByDiarioId = async function (diarioId) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-    if (
-      diarioId != '' &&
-      diarioId != null &&
-      diarioId != undefined &&
-      !isNaN(diarioId) &&
-      diarioId > 0
-    ) {
+    if (  diarioId != '' &&diarioId != null &&  diarioId != undefined &&   !isNaN(diarioId) && diarioId > 0  ) {
       let result = await diarioTipoViagemDAO.setDeleteDiaryTravelTypeByDiaryId(
         diarioId
       );
@@ -291,4 +342,6 @@ module.exports = {
   atualizarDiarioTipoViagem,
   excluirDiarioTipoViagemByDiarioId,
   excluirDiarioTipoViagem,
+  buscarDiarioTipoViagemIdTipoViagem,
+  BuscarInformaçõesImgIdTipoviagemDiairo
 };
