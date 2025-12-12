@@ -40,6 +40,7 @@ const listarComentario = async function () {
     }
 }
 
+//  Listar os comentarios porIDiario 
 const listarComentarioId = async function (id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 

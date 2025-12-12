@@ -1,4 +1,4 @@
-const TOKEN = 'sp=racw&st=2025-12-10T19:36:42Z&se=2025-12-12T15:51:42Z&sv=2024-11-04&sr=c&sig=73oOxCdJrBF3uYOFa7ojvvJH%2BxkuUiYmP8llfD0iajo%3D'
+const TOKEN = 'sp=racwdl&st=2025-12-12T16:39:11Z&se=2025-12-17T00:54:11Z&sv=2024-11-04&sr=c&sig=AfcIbxJqY%2BnSQodJOZsedrooHKHp9kidYBVhQKruQ4s%3D'
 const ACCOUNT = 'uploadtravel'// colocar nome uploadFastravel lá na azure 
 const CONTAINER = 'uploadtravel' // colocar nome uploadFastravel lá na azure 
 
