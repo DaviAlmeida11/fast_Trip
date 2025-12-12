@@ -74,8 +74,8 @@ router.put('/:id', cors(), bodyParserJson, async function (request, response) {
     
     let usuarioSeguidor  = await controllerUsuarioSeguidor.atualizarUsuarioSeguidor(dadosBody, idUsuarioSeguidor , contentType)
 
-    response.status(usuarioSeguidor .status_code)
-    response.json(usuarioSeguidor )
+    response.status(usuarioSeguidor.status_code)
+    response.json(usuarioSeguidor)
 })
 
 router.delete('/:id', cors(), async function (request, response) {

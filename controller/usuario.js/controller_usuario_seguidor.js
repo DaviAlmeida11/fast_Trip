@@ -12,7 +12,8 @@ const usuarioSeguidorDAO = require('../../model/dao/usuario_seguidor.js');
 // Import mensagens padrão
 const MESSAGE_DEFAULT = require('../modulo/message_conf.js')
 
-//LISTAR TODOS OS VÍNCULOS
+
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarUsuarioSeguidor = async function () {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
@@ -109,66 +110,53 @@ const listarSeguidoresUsuarioId = async function (usuarioId) {
 };
 
 //INSERIR VÍNCULO
-const inserirUsuarioSeguidor = async function (dados, foto, contentType) {
+const inserirUsuarioSeguidor = async function (usuario, contentType) {
+
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-      // Verifica Content-Type
-      if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
+    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
 
-          // 1. Validar campos obrigatórios
-          if (!dados.email || !dados.senha) {
-              MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
-              return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
-          }
+     
+      let validacao = await validarDadosUsuarioSeguidor(usuario);
+        
 
-          // 2. Criptografar senha
-          dados.senha = await cripitografia.criptografarSenha(dados.senha);
+      if (!validacao) {
 
-          // 3. Fazer upload da foto
-          let urlFoto = await UPLOAD.upliadFiles(foto);
+        let result = await usuarioSeguidorDAO.setInsertUserFollower(usuario);
+   
 
-          if (!urlFoto) {
-              return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-          }
+        if (result) {
+          let lastIusuario = await usuarioSeguidorDAO.getSelectLastIdUserFollower();
 
-          dados.capa = urlFoto;
+          if (lastIusuario) {
 
-          // 4. Inserir usuário no banco
-          let result = await userDAO.insertUsuario(dados);
+            usuario.id = lastIusuario
 
-          if (result) {
+            MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
+            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
+            MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
+            MESSAGE.HEADER.response = usuario;
 
-              // 5. Buscar último ID inserido
-              let lastId = await userDAO.selectLastIdUsuario();
-
-              if (lastId && lastId[0] && lastId[0].id_usuario) {
-                  dados.id_usuario = lastId[0].id_usuario;
-
-                  // 6. Retornar resposta no padrão MESSAGE
-                  MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
-                  MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
-                  MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
-                  MESSAGE.HEADER.response = dados;
-
-                  return MESSAGE.HEADER;
-
-              } else {
-                  return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-              }
-
+            return MESSAGE.HEADER;
           } else {
-              return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
           }
-
+        } else {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL;
+        }
       } else {
-          return MESSAGE.ERROR_CONTENT_TYPE; // 415
+        return validacao;
       }
+    } else {
+      return MESSAGE.ERROR_CONTENT_TYPE;
+    }
 
-  } catch (error) {
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+  } catch (error) { console.log(error)
+     
+    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
   }
-};
+}
 
 //ATUALIZAR VÍNCULO
 

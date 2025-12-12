@@ -12,8 +12,8 @@ const usuarioViagemDAO = require('../../model/dao/usuarioViagem.js');
 // Import das mensagens padrão
 const MESSAGE_DEFAULT = require('../modulo/message_conf.js');
 
-//  LISTAR TODOS USUARIOS
 
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarUsuarioViagem = async function () {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
