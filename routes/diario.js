@@ -48,36 +48,22 @@ router.get('/:id', cors(), async function (request, response){
 
 })
 
-router.get('/:nome', cors(), async function (request, response){
-    let nomeDiario = request.params.nome
-
-    let diario = await controllerDiarioMessege.listarDiarioNome(nomeDiario)
-    response.status(diario.status_code)
-    response.json(diario)  
 
 
-})
+router.post('/dada/', cors(), upload.single('img'), async function(request, response){
+    let dadosBody = request.body;
+    let contentType = request.headers['content-type'];
+    let foto = request.file;
+
+    let diario = await controllerDiario.inserirDiario(dadosBody, foto, contentType );
+
+    response.status(diario.status_code);
+    response.json(diario);
+});
+  
 
 
-
-router.post('/', cors(), upload.single('img'), async function(request, response){
-    //Recebe o objeto JSON pelo body da requisição
-    let dadosBody = request.body
-
-    //Recebe o content type da requisição
-    let contentType = request.headers['content-type']
-
-    let foto       = request.file
-console.log(foto)
-    //Chama a função da controller para inserir o diario, enviamos os dados do body e o content-type
-    let diario = await controllerDiario.inserirDiario(dadosBody, foto, contentType )
-    
-
-    response.status(diario.status_code)
-    response.json(diario)
-
-})
-router.put('/:id', cors(), bodyParserJson, async function (request, response) {
+router.put('/:id', cors(), upload.single('img'), async function (request, response) {
     let dadosBody = request.body
 
     let idDiario = request.params.id

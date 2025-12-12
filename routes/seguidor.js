@@ -53,7 +53,7 @@ router.post('/', cors(), upload.single('img'), async function(request, response)
     let contentType = request.headers['content-type']
 
     let foto       = request.file
-console.log(foto)
+
     //Chama a função da controller para inserir o seguidor, enviamos os dados do body e o content-type
     let seguidor = await controllerSeguidor.inserirSeguidor(dadosBody, foto, contentType )
     
@@ -62,14 +62,16 @@ console.log(foto)
     response.json(seguidor)
 
 })
-router.put('/:id', cors(), bodyParserJson, async function (request, response) {
+router.put('/:id', cors(), upload.single('img'), async function (request, response) {
     let dadosBody = request.body
 
     let idSeguidor = request.params.id
 
     let contentType = request.headers['content-type']
+
+    let foto       = request.file
     
-    let seguidor = await controllerSeguidor.atualizarSeguidor(dadosBody, idSeguidor, contentType)
+    let seguidor = await controllerSeguidor.atualizarSeguidor(dadosBody, idSeguidor, contentType, foto)
 
     response.status(seguidor.status_code)
     response.json(seguidor)

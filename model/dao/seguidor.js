@@ -130,9 +130,7 @@ const setupdateFolower = async function (seguidor) {
                     img = '${seguidor.img}'
                 WHERE id_seguidor = ${seguidor.id};
             `
-        }
-
-        
+        }        
 
         let result = await prisma.$executeRawUnsafe(sql);
 

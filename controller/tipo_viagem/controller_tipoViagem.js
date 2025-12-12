@@ -11,6 +11,9 @@ const tipoViagemDAO = require('../../model/dao/tipo_viagem.js')
 //Import do arquivo que padroniza todas as mensagens
 const MESSAGE_DEFAULT = require('../modulo/message_conf.js')
 
+
+
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarTipoViagens = async function() {
     //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))

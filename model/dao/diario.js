@@ -78,8 +78,8 @@ const setInsertDiairio = async function (diario) {
 
             sql = `insert into tb_diario(nome, is_publico, descricao, criado_em, atualizado_em, img, id_usuario, id_local, id_viagem) 
         values('${diario.nome}',${diario.is_publico}, '${diario.descricao}', '${diario.criado_em}', '${diario.atualizado_em}', '${diario.img}', '${diario.id_usuario}', '${diario.id_local}', '${diario.id_viagem}')`
-            console.log(sql)
-        }
+            
+        } 
 
         let result = await prisma.$executeRawUnsafe(sql)
 
@@ -148,7 +148,7 @@ WHERE id_diario = ${diario.id};
         }
 
     } catch (error) {
-        console.log(error)
+        
         return false
     }
 }

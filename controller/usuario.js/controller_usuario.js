@@ -17,7 +17,7 @@ const MESSAGE_DEFAULT = require('../modulo/message_conf')
 
   
 
-
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarUsuarios = async function () {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
@@ -131,49 +131,74 @@ const inserirUsuario = async function (dados, img, contentType) {
     }
 }
 
-const atualizarUsuario = async function(usuario, id, contentType) {
-  //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+const atualizarUsuario = async function (usuario, id, contentType, img) {
+  // Cópia profunda do objeto MESSAGE_DEFAULT
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-      if(String(contentType).toUpperCase() === 'APPLICATION/JSON'){
-          let validarId = await listarUsuarioId(id)
-
-          if(validarId.status_code == 200){
-
-              let validarDados = validarDadosUsuario(usuario)
-              
-
-              if(!validarDados){
-                  //Adicionando o ID no JSON com os dados do usuario
-                  usuario.id = parseInt(id)
-
-                  let result = await userDAO.setupdateUser(usuario)
-
-                  if(result){
-                      MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
-                      MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
-                      MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
-                      MESSAGE.HEADER.response = usuario
-      
-                      return MESSAGE.HEADER //200
-                  }else{
-                      return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
-                  }
-
-              }else{
-                  return validarDados
-              }
-          }else{
-              return validarId
-          }
-      }else{
-          return MESSAGE.ERROR_CONTENT_TYPE //415
+      // 1. Verificar Content-Type
+      if (!contentType || !contentType.toLowerCase().includes("multipart/form-data")) {
+          return MESSAGE.ERROR_CONTENT_TYPE; // 415
       }
-  } catch (error) { 
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+
+      // 2. Verificar se o ID existe
+      const validarId = await listarUsuarioId(id);
+      if (validarId.status_code !== 200) {
+          return validarId; // 404 ou outro erro
+      }
+
+      // 3. Validar campos obrigatórios
+      if (!usuario.email || !usuario.senha) {
+          MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Campos obrigatórios vazios";
+          return MESSAGE.ERROR_REQUIRED_FIELDS; // 400
+      }
+
+      // 4. Criptografar a senha
+      usuario.senha = await cripitografia.criptografarSenha(usu.senha);
+
+      // 5. Verificar imagem enviada
+      if (!img || !img.originalname || !img.buffer) {
+          console.log("Arquivo de imagem inválido:", img);
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 6. Upload da imagem
+      const urlImg = await UPLOAD.uploadFiles(img);
+      if (!urlImg) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 7. Adiciona URL ao objeto
+      usuario.img = urlImg;
+
+      // 8. Validar dados do usuário
+      const validarDados = validarDadosUsuario(usuario);
+      if (validarDados) {
+          return validarDados; // retorna erro de validação
+      }
+
+      // 9. Atualizar usuário no banco
+      usuario.id = parseInt(id);
+
+      const result = await userDAO.setupdateUser(usuario);
+      if (!result) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 10. Sucesso
+      MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status;
+      MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code;
+      MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message;
+      MESSAGE.HEADER.response = usuario;
+
+      return MESSAGE.HEADER; // 200
+
+  } catch (error) {
+      console.error(error);
+      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
   }
-}
+};
+
 
   const excluirUsuario = async function (id) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))

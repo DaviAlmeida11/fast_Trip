@@ -13,7 +13,7 @@ const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 const UPLOAD = require('../upload/controller_upload_azure.js')
 
 
-
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarSeguidor = async function () {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
@@ -111,54 +111,70 @@ const inserirSeguidor = async function (dados, img, contentType) {
         }
 
     } catch (error) {
-        console.log("Erro inserirUsuario:", error);
+       
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }
 }
 
-const atualizarSeguidor = async function(seguidor, id, contentType) {
-  //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 
-  try {
-      if(String(contentType).toUpperCase() === 'APPLICATION/JSON'){
-          let validarId = await listarSeguidor(id)
+  const atualizarSeguidor = async function (seguidor, id, contentType, img) {
+    // Cópia profunda do objeto MESSAGE_DEFAULT
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-          if(validarId.status_code == 200){
+    try {
+        // 1. Verificar Content-Type
+        if (!contentType || !contentType.toLowerCase().includes("multipart/form-data")) {
+            return MESSAGE.ERROR_CONTENT_TYPE; // 415
+        }
 
-              let validarDados = validarDadosSeguidor(seguidor)
-              
-
-              if(!validarDados){
-                  //Adicionando o ID no JSON com os dados do usuario
-                  seguidor.id = parseInt(id)
-
-                  let result = await seguidorDAO.setupdateFolower(seguidor)
-
-                  if(result){
-                      MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
-                      MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
-                      MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
-                      MESSAGE.HEADER.response = seguidor
-      
-                      return MESSAGE.HEADER //200
-                  }else{
-                      return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
-                  }
-
-              }else{
-                  return validarDados
-              }
-          }else{
-              return validarId
-          }
-      }else{
-          return MESSAGE.ERROR_CONTENT_TYPE //415
+ // 2. Verificar se o ID existe
+      const validarId = await listarSeguidorId(id);
+      if (validarId.status_code !== 200) {
+          return validarId; // 404 ou outro erro
       }
-  } catch (error) { 
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
-  }
-}
+
+        // 5. Verificar imagem enviada
+        if (!img || !img.originalname || !img.buffer) {
+            console.log("Arquivo de imagem inválido:", img);
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+        // 6. Upload da imagem
+        const urlImg = await UPLOAD.uploadFiles(img);
+        if (!urlImg) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+        // 7. Adiciona URL ao objeto
+        seguidor.img = urlImg;
+
+        // 8. Validar dados do usuário
+        const validarDados = validarDadosSeguidor(seguidor);
+        if (validarDados) {
+            return validarDados; // erro de validação
+        }
+
+        // 9. Atualizar usuário no banco
+        seguidor.id = parseInt(id);
+        const result = await seguidorDAO.setupdateFolower(seguidor);
+
+        if (!result) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
+
+        // 10. Sucesso
+        MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status;
+        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code;
+        MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message;
+        MESSAGE.HEADER.response = seguidor;
+
+        return MESSAGE.HEADER; // 200
+
+    } catch (error) {
+
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+    }
+};
 
 
 

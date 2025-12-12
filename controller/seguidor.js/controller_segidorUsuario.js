@@ -12,7 +12,7 @@ const seguidorUsuarioDAO = require('../../model/dao/seguidorUsuario.js')
 const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
 
-
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarSeguidorUsuarioId = async function (id) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
 

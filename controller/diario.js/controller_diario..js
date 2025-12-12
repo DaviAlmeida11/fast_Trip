@@ -15,7 +15,7 @@ const UPLOAD = require('../upload/controller_upload_azure.js')
 
 
 
-
+// Lista todos os objetos relacionados a esta tabela no banco de dados
 const listarDiario = async function () {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
@@ -85,7 +85,7 @@ const inserirDiario = async function (dados, img, contentType) {
 
         // Valida se o arquivo foi enviado corretamente
         if (!img || !img.originalname || !img.buffer) {
-            console.log("Arquivo de imagem inválido:", img);
+         
             return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
 
@@ -101,7 +101,7 @@ const inserirDiario = async function (dados, img, contentType) {
 
         // Inserção no banco
         let resultado = await diarioDAO.setInsertDiairio(dados);
-
+console.log(resultado)
         if (resultado) {
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
@@ -119,48 +119,69 @@ const inserirDiario = async function (dados, img, contentType) {
     }
 }
 
-const atualizarDiario = async function (diario, id, contentType) {
-  //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
+const atualizarDiario = async function (diario, id, contentType, img) {
+  // Cópia do objeto MESSAGE_DEFAULT
+  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-    if (String(contentType).toUpperCase() === 'APPLICATION/JSON') {
-      let validarId = await listarLocalId(id)
-
-      if (validarId.status_code == 200) {
-
-        let validarDados = await validarDadosDiario(diario)
-
-        if (!validarDados) {
-          //Adicionando o ID no JSON com os dados do ator
-          diario.id = parseInt(id)
-
-          let result = await diarioDAO.setupdateDiario(diario)
-
-          if (result) {
-            MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status
-            MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code
-            MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message
-            MESSAGE.HEADER.response = diario
-
-            return MESSAGE.HEADER //200
-          } else {
-            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL //500
-          }
-
-        } else {
-          return validarDados
-        }
-      } else {
-        return validarId
+      // 1. Verificação do Content-Type
+      if (!contentType || !contentType.toLowerCase().includes("multipart/form-data")) {
+          return MESSAGE.ERROR_CONTENT_TYPE; // 415
       }
-    } else {
-      return MESSAGE.ERROR_CONTENT_TYPE //415
-    }
+
+      // 2. Verificar imagem enviada
+      if (!img || !img.originalname || !img.buffer) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 3. Upload da imagem
+      let urlImg = await UPLOAD.uploadFiles(img);
+
+      if (!urlImg) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 4. Adiciona a URL da imagem ao diário
+      diario.img = urlImg;
+
+      // 5. Validar ID
+      let validarId = await listarLocalId(id);
+
+      if (validarId.status_code !== 200) {
+          return validarId; // se não existir, retorna erro
+      }
+
+      // 6. Validar dados
+      let validarDados = await validarDadosDiario(diario);
+
+      if (validarDados) {
+          return validarDados; // erro de validação
+      }
+
+      // 7. Define ID no objeto para atualização
+      diario.id = parseInt(id);
+
+      // 8. Atualizar no banco
+      let result = await diarioDAO.setupdateDiario(diario);
+
+      if (!result) {
+          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+      }
+
+      // 9. Sucesso
+      MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status;
+      MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code;
+      MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message;
+      MESSAGE.HEADER.response = diario;
+
+      return MESSAGE.HEADER; // 200
+
   } catch (error) {
-    return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER //500
+    
+      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
   }
-}
+};
+
 
 
 const excluirDiairo = async function (id) {

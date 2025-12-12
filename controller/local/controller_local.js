@@ -11,7 +11,7 @@ const localDAO = require('../../model/dao/local.js')
 const MESSAGE_DEFAULT = require("../modulo/message_conf.js")
 
 
-
+// Lista todos os objetos relacionados a esta tabela no banco de dados 
 const listarLocal = async function () {
   //Realizando uma cópia do objeto MESSAGE_DEFAULT, permitindo que as alterações desta função não interfiram em outras funções
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT))
@@ -19,7 +19,7 @@ const listarLocal = async function () {
   try {
     //Chama a função do DAO para retornar a lista de diretores
     let result = await localDAO.getSelectAllLocal()
-console.log(result)
+
     if (result) {
       if (result.length > 0) {
         MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status
