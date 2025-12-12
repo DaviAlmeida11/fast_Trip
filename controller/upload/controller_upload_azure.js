@@ -1,6 +1,6 @@
 /***************************************************************************************
  * Objetivo: Arquivo resposnsável por realizar UPLOAD de arquivos na Azure
- * Data: 20/06/2025
+ * Data: 11/06/2025
  * Autor: Davi
  * Versão: 1.0
  * Obs: Para fazer funcionar o upload precisa instalar a biblioteca para fazer o Fetch e 

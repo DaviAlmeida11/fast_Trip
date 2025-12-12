@@ -45,7 +45,7 @@ const getSelectIdTipoviagemDiario = async function (id) {
     } else {
       return false;
     }
-  } catch (error) {
+  } catch (error) { 
     return false;
   }
 }
@@ -69,23 +69,23 @@ const getTravelTypesByDiaryId = async function (idDiario) {
     } else {
       return false;
     }
-  } catch (error) {
+  } catch (error) { 
     return false;
   }
 };
 
-const getSelectEspecifcInformations = async function (idDiario) {
+const getSelectEspecifcInformations = async function (idTipoViagem) {
   try {
-    let sql = `SELECT 
-                 d.id_diario,
-                 d.nome AS nome_diario,
-                 d.img,
-                  t.nome AS nome_tipo_viagem
-                FROM tb_diario d
-                LEFT JOIN tb_tipo_viagem t
-                ON d.id_viagem = t.id_tipo_viagem
-                WHERE d.id_diario =  ${idDiario}
-                ORDER BY d.id_diario;`
+    let sql = `  SELECT 
+    d.id_diario,
+    d.nome AS nome_diario,
+    d.img,
+    d.id_usuario,
+    t.nome AS nome_tipo_viagem
+FROM tb_diario d
+LEFT JOIN tb_tipo_viagem t 
+       ON d.id_viagem = t.id_tipo_viagem
+WHERE t.id_tipo_viagem = ${idTipoViagem}`
     let result = await prisma.$queryRawUnsafe(sql);
     if (Array.isArray(result)) {
       return result;
