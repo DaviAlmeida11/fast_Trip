@@ -85,7 +85,7 @@ const insertUsuario = async function (usuario) {
                     '${usuario.criado_em}',
                     '${usuario.atualizado_em}'
                 )`
-console.log(sql)
+
         } else {
 
             sql = `INSERT INTO tb_usuario
@@ -112,7 +112,7 @@ console.log(sql)
             return false
         }
 
-    } catch (error) { console.log(error)
+    } catch (error) { 
         return false
     }
 
@@ -168,7 +168,7 @@ const setupdateUser = async function (usuario) {
         }
 
     } catch (error) {
-        console.log("Erro no update:", error);
+        
         return false
     }
 }

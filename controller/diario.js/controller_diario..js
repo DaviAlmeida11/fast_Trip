@@ -78,31 +78,37 @@ const inserirDiario = async function (dados, img, contentType) {
     let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
     try {
-        // Verificação do Content-Type
+
         if (!contentType || !contentType.toLowerCase().includes('multipart/form-data')) {
             return MESSAGE.ERROR_CONTENT_TYPE; // 415
         }
 
-        // Valida se o arquivo foi enviado corretamente
+       
         if (!img || !img.originalname || !img.buffer) {
-         
             return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
 
-        // Upload da imagem
         let urlImg = await UPLOAD.uploadFiles(img);
 
         if (!urlImg) {
             return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
         }
 
-        // Adiciona a URL da imagem nos dados
+    
         dados.img = urlImg;
 
-        // Inserção no banco
-        let resultado = await diarioDAO.setInsertDiairio(dados);
+     
+        let result = await diarioDAO.setInsertDiairio(dados);
 
-        if (resultado) {
+        if (result) {
+
+       
+            let lastIdDiario = await diarioDAO.getSelectLastId();
+
+            if (lastIdDiario) {
+                dados.id = lastIdDiario;
+            }
+
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
             MESSAGE.HEADER.message = MESSAGE.SUCCESS_CREATED_ITEM.message;
@@ -114,10 +120,10 @@ const inserirDiario = async function (dados, img, contentType) {
         }
 
     } catch (error) {
-
+   
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }
-}
+};
 
   const atualizarDiario = async function (diario, id, contentType, img) {
     // Cópia profunda do objeto MESSAGE_DEFAULT

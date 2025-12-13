@@ -126,7 +126,7 @@ const inserirUsuario = async function (dados, img, contentType) {
         }
 
     } catch (error) {
-        console.log("Erro inserirUsuario:", error);
+       
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }
 }
