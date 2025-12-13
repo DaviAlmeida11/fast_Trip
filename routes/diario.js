@@ -50,7 +50,7 @@ router.get('/:id', cors(), async function (request, response){
 
 
 
-router.post('/dada/', cors(), upload.single('img'), async function(request, response){
+router.post('/', cors(), upload.single('img'), async function(request, response){
     let dadosBody = request.body;
     let contentType = request.headers['content-type'];
     let foto = request.file;
@@ -69,8 +69,10 @@ router.put('/:id', cors(), upload.single('img'), async function (request, respon
     let idDiario = request.params.id
 
     let contentType = request.headers['content-type']
+
+        let foto       = request.file
     
-    let diario = await controllerDiario.atualizarDiario(dadosBody, idDiario, contentType)
+    let diario = await controllerDiario.atualizarDiario(dadosBody, idDiario, contentType, foto)
 
     response.status(diario.status_code)
     response.json(diario)

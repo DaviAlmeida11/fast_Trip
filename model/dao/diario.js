@@ -77,7 +77,7 @@ const setInsertDiairio = async function (diario) {
         } else {
 
             sql = `insert into tb_diario(nome, is_publico, descricao, criado_em, atualizado_em, img, id_usuario, id_local, id_viagem) 
-        values('${diario.nome}',${diario.is_publico}, '${diario.descricao}', '${diario.criado_em}', '${diario.atualizado_em}', '${diario.img}', '${diario.id_usuario}', '${diario.id_local}', '${diario.id_viagem}')`
+        values('${diario.nome}', ${diario.is_publico}, '${diario.descricao}', '${diario.criado_em}', '${diario.atualizado_em}', '${diario.img}', '${diario.id_usuario}', '${diario.id_local}', '${diario.id_viagem}')`
             
         } 
 
@@ -89,7 +89,7 @@ const setInsertDiairio = async function (diario) {
             return false
         }
     } catch (error) {
-        console.log(error)
+       
 
         return false
     }
@@ -99,6 +99,7 @@ const setupdateDiario = async function (diario) {
     try {
         let sql = "";
 
+
         if (diario.img == null) {
 
             // NÃO ATUALIZA A IMAGEM
@@ -106,7 +107,7 @@ const setupdateDiario = async function (diario) {
 UPDATE tb_diario
 SET 
     nome = '${diario.nome}',
-    is_publico = '${diario.is_publico}',
+    is_publico = ${diario.is_publico},
     descricao = '${diario.descricao}',
     criado_em = '${diario.criado_em}',
     atualizado_em = '${diario.atualizado_em}',
@@ -124,7 +125,7 @@ WHERE id_diario = ${diario.id};
 UPDATE tb_diario
 SET 
     nome = '${diario.nome}',
-    is_publico = '${diario.is_publico}',
+    is_publico = ${diario.is_publico},
     descricao = '${diario.descricao}',
     criado_em = '${diario.criado_em}',
     atualizado_em = '${diario.atualizado_em}',
@@ -137,22 +138,19 @@ WHERE id_diario = ${diario.id};
 
         }
 
-
-
         let result = await prisma.$executeRawUnsafe(sql);
 
         if (result) {
-            return result // UPDATE OK
+            return result; // UPDATE OK
         } else {
             return false; // UPDATE não afetou linhas
         }
 
     } catch (error) {
-        
-        return false
+        console.log(error);
+        return false;
     }
 }
-
 const setDeleteDiairio = async function (id) {
     try {
         let sql = `delete from tb_diario where id_diario = ${id}`

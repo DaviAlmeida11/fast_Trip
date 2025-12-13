@@ -101,7 +101,7 @@ const inserirDiario = async function (dados, img, contentType) {
 
         // Inserção no banco
         let resultado = await diarioDAO.setInsertDiairio(dados);
-console.log(resultado)
+
         if (resultado) {
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
             MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_CREATED_ITEM.status_code;
@@ -114,73 +114,72 @@ console.log(resultado)
         }
 
     } catch (error) {
-        console.log("Erro inserirUsuario:", error);
+
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
     }
 }
 
-const atualizarDiario = async function (diario, id, contentType, img) {
-  // Cópia do objeto MESSAGE_DEFAULT
-  let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
+  const atualizarDiario = async function (diario, id, contentType, img) {
+    // Cópia profunda do objeto MESSAGE_DEFAULT
+    let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
-  try {
-      // 1. Verificação do Content-Type
-      if (!contentType || !contentType.toLowerCase().includes("multipart/form-data")) {
-          return MESSAGE.ERROR_CONTENT_TYPE; // 415
-      }
+    try {
+        // 1. Verificar Content-Type
+        if (!contentType || !contentType.toLowerCase().includes("multipart/form-data")) {
+            return MESSAGE.ERROR_CONTENT_TYPE; // 415
+        }
 
-      // 2. Verificar imagem enviada
-      if (!img || !img.originalname || !img.buffer) {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-      }
-
-      // 3. Upload da imagem
-      let urlImg = await UPLOAD.uploadFiles(img);
-
-      if (!urlImg) {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-      }
-
-      // 4. Adiciona a URL da imagem ao diário
-      diario.img = urlImg;
-
-      // 5. Validar ID
-      let validarId = await listarLocalId(id);
-
+ // 2. Verificar se o ID existe
+      const validarId = await listarDiarioId(id);
       if (validarId.status_code !== 200) {
-          return validarId; // se não existir, retorna erro
+          return validarId; // 404 ou outro erro
       }
 
-      // 6. Validar dados
-      let validarDados = await validarDadosDiario(diario);
+        // 5. Verificar imagem enviada
+        if (!img || !img.originalname || !img.buffer) {
+            console.log("Arquivo de imagem inválido:", img);
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
-      if (validarDados) {
-          return validarDados; // erro de validação
-      }
+        // 6. Upload da imagem
+        const urlImg = await UPLOAD.uploadFiles(img);
+       
+        if (!urlImg) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
-      // 7. Define ID no objeto para atualização
-      diario.id = parseInt(id);
+        // 7. Adiciona URL ao objeto
+        diario.img = urlImg;
 
-      // 8. Atualizar no banco
-      let result = await diarioDAO.setupdateDiario(diario);
+        // 8. Validar dados do usuário
+        const validarDados = validarDadosDiario(diario);
+        if (validarDados) {
+            return validarDados; // erro de validação
+        }
 
-      if (!result) {
-          return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
-      }
+        // 9. Atualizar usuário no banco
+        diario.id = parseInt(id);
+        const result = await diarioDAO.setupdateDiario(diario);
 
-      // 9. Sucesso
-      MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status;
-      MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code;
-      MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message;
-      MESSAGE.HEADER.response = diario;
+        if (!result) {
+            return MESSAGE.ERROR_INTERNAL_SERVER_MODEL; // 500
+        }
 
-      return MESSAGE.HEADER; // 200
+        // 10. Sucesso
+        MESSAGE.HEADER.status = MESSAGE.SUCCESS_UPDATED_ITEM.status;
+        MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_UPDATED_ITEM.status_code;
+        MESSAGE.HEADER.message = MESSAGE.SUCCESS_UPDATED_ITEM.message;
+        MESSAGE.HEADER.response = diario;
 
-  } catch (error) {
-    
-      return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
-  }
+        return MESSAGE.HEADER; // 200
+
+    } catch (error) {
+
+        return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER; // 500
+    }
 };
+
+
 
 
 
@@ -223,13 +222,6 @@ const validarDadosDiario = function (diario) {
     MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [NOME] invalido`
     return MESSAGE.ERROR_REQUIRED_FIELDS //400
 
-    
-  }else if (typeof diario.is_publico !== "boolean") {
-    MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = "Atributo [IS_PUBLICO] inválido";
-    return MESSAGE.ERROR_REQUIRED_FIELDS //400
-// Converter para inteiro para salvar no banco
-
-
   } else if (diario.descricao == '' || diario.descricao == null || diario.descricao == undefined || diario.descricao.length > 200) {
     MESSAGE.ERROR_REQUIRED_FIELDS.invalid_field = `Atributo [DESCRIÇÃO] invalido`
     return MESSAGE.ERROR_REQUIRED_FIELDS //400
@@ -266,7 +258,7 @@ const validarDadosDiario = function (diario) {
     return MESSAGE.ERROR_REQUIRED_FIELDS //400
   }
   
-// tranforma os dados do booleam em 1 ou 0 para o banco 
+
   diario.is_publico = diario.is_publico ? 1 : 0;
 
   return false; // validação OK

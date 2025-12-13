@@ -48,7 +48,7 @@ const validarLoginUsuario = async function (email, senhaDigitada) {
 
         return MESSAGE.HEADER
 
-    } catch (error) { console.log(error)
+    } catch (error) { 
         return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
