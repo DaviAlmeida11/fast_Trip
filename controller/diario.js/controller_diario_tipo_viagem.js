@@ -134,18 +134,29 @@ const listarTiposViagemPorDiarioId = async function (diarioId) {
   }
 };
 
-
 const BuscarInformaçõesImgIdTipoviagemDiairo = async function (diarioId) {
   let MESSAGE = JSON.parse(JSON.stringify(MESSAGE_DEFAULT));
 
   try {
-    if (  diarioId != '' &&diarioId != null &&diarioId != undefined &&!isNaN(diarioId) &&diarioId > 0) {
-      let result = await diarioTipoViagemDAO.getSelectEspecifcInformations(diarioId);
+    if (  diarioId != '' && diarioId != null &&  diarioId != undefined && !isNaN(diarioId) &&diarioId > 0 ) {
+      let result =
+        await diarioTipoViagemDAO.getSelectEspecifcInformations(diarioId);
 
       if (result) {
         if (result.length > 0) {
+
+          
+          let lastId =
+            await diarioTipoViagemDAO.getSelectLastIdDiaryTravelType();
+
+          if (lastId) {
+            MESSAGE.HEADER.last_id_diario_tipo_viagem =
+              lastId.id_diario_tipo_viagem
+          }
+
           MESSAGE.HEADER.status = MESSAGE.SUCCESS_REQUEST.status;
           MESSAGE.HEADER.status_code = MESSAGE.SUCCESS_REQUEST.status_code;
+          
           MESSAGE.HEADER.response.travel_types = result;
 
           return MESSAGE.HEADER;
@@ -161,10 +172,10 @@ const BuscarInformaçõesImgIdTipoviagemDiairo = async function (diarioId) {
       return MESSAGE.ERROR_REQUIRED_FIELDS;
     }
   } catch (error) {
+    
     return MESSAGE.ERROR_INTERNAL_SERVER_CONTROLLER;
   }
 };
-
 
 //INSERIR
 
@@ -183,7 +194,7 @@ const inserirDiarioTipoViagem = async function (data, contentType) {
             await diarioTipoViagemDAO.getSelectLastIdDiaryTravelType();
 
           if (lastId) {
-            data.id_diario_tipo_viagem = lastId[0].id_diario_tipo_viagem;
+            data.id_diario_tipo_viagem = lastId.id_diario_tipo_viagem;
 
             MESSAGE.HEADER.status = MESSAGE.SUCCESS_CREATED_ITEM.status;
             MESSAGE.HEADER.status_code =

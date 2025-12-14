@@ -76,19 +76,23 @@ const getTravelTypesByDiaryId = async function (idDiario) {
 
 const getSelectEspecifcInformations = async function (idTipoViagem) {
   try {
-    let sql = `  SELECT 
-    d.id_diario,
-    d.nome AS nome_diario,
-    d.img,
-    d.id_usuario,
-    t.nome AS nome_tipo_viagem
-FROM tb_diario d
-LEFT JOIN tb_tipo_viagem t 
-       ON d.id_viagem = t.id_tipo_viagem
-WHERE t.id_tipo_viagem = ${idTipoViagem}`
+    let sql = `       SELECT 
+                     d.id_diario,
+                     d.nome AS nome_diario,
+                     d.img,
+                     d.is_publico,
+                    t.id_tipo_viagem,
+                    t.nome AS nome_tipo_viagem
+                    FROM tb_diario d
+                    LEFT JOIN tb_diario_tipo_viagem dt
+                    ON d.id_diario = dt.id_diario
+                    JOIN tb_tipo_viagem t
+                    ON t.id_tipo_viagem = dt.id_tipo_viagem
+                    WHERE dt.id_tipo_viagem = ${idTipoViagem}
+                    ORDER BY d.id_diario`
     let result = await prisma.$queryRawUnsafe(sql);
     if (Array.isArray(result)) {
-      return result;
+      return result
     } else {
       return false;
     }
